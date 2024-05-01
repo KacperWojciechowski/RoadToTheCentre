@@ -136,12 +136,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="src\GameMap\Galaxy.cpp" />
     <ClCompile Include="src\GameMap\Planet.cpp" />
     <ClCompile Include="src\GameMap\SolarSystem.cpp" />
     <ClCompile Include="src\TimeServices\GameTimeService.cpp" />
     <ClCompile Include="src\Utility\RandomGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="inc\GameMap\Galaxy.h" />
     <ClInclude Include="inc\GameMap\Planet.h" />
     <ClInclude Include="inc\GameMap\SolarSystem.h" />
     <ClInclude Include="inc\TimeServices\GameTimeService.h" />

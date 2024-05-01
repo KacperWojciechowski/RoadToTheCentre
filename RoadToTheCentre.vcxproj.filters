@@ -48,6 +48,9 @@
     <ClCompile Include="src\Utility\RandomGenerator.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameMap\Galaxy.cpp">
+      <Filter>Source Files\GameMap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameMap\Planet.h">
@@ -64,6 +67,9 @@
     </ClInclude>
     <ClInclude Include="inc\Utility\RandomGenerator.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GameMap\Galaxy.h">
+      <Filter>Header Files\GameMap</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
