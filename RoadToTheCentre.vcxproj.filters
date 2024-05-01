@@ -25,6 +25,12 @@
     <Filter Include="Source Files\TimeServices">
       <UniqueIdentifier>{867e5439-1494-4b1f-8ecf-0e9ba4a2c913}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{a5d74317-7ed8-40f5-a667-e4b6249f2710}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{a4c2b331-3416-434d-b3ad-b1b58d4d6a24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -36,6 +42,12 @@
     <ClCompile Include="src\TimeServices\GameTimeService.cpp">
       <Filter>Source Files\TimeServices</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameMap\SolarSystem.cpp">
+      <Filter>Source Files\GameMap</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utility\RandomGenerator.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameMap\Planet.h">
@@ -46,6 +58,12 @@
     </ClInclude>
     <ClInclude Include="inc\TimeServices\ITimeObserver.h">
       <Filter>Header Files\TimeServices</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GameMap\SolarSystem.h">
+      <Filter>Header Files\GameMap</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Utility\RandomGenerator.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

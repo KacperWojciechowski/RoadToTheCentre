@@ -1,9 +1,48 @@
 #include <GameMap/Planet.h>
-#include <random>
+#include <Utility/RandomGenerator.h>
 #include <cassert>
 
 namespace GameMap
 {
+namespace
+{
+int generatePlanetId()
+{
+	constexpr auto lowerBound = 0x01000000;
+	constexpr auto upperBound = 0x0FFFFFFF;
+	return utility::RandomGenerator::getInt(lowerBound, upperBound);
+}
+
+float generateSpiceCapacityInfo()
+{
+	constexpr auto lowerBound = 10.0f;
+	constexpr auto upperBound = 50.0f;
+	return utility::RandomGenerator::getFloat(lowerBound, upperBound);
+}
+
+float generateSellPrice(float buyPrice)
+{
+	constexpr auto lowerSellMultiplierBound = 1.05f;
+	constexpr auto upperSellMultiplierBound = 1.5f;
+
+	return buyPrice * utility::RandomGenerator::getFloat(lowerSellMultiplierBound, upperSellMultiplierBound);
+}
+
+float generateBuyPrice()
+{
+	constexpr auto lowerBasePriceBound = 50.0f;
+	constexpr auto upperBasePriceBound = 300.0f;
+	return utility::RandomGenerator::getFloat(lowerBasePriceBound, upperBasePriceBound);
+}
+
+int generateCycleRefreshPeriod()
+{
+	constexpr auto lowerBound = 2;
+	constexpr auto upperBound = 5;
+	return utility::RandomGenerator::getInt(lowerBound, upperBound);
+}
+} // namespace::
+
 std::ostream& operator<<(std::ostream& out, const Planet& planet)
 {
 	out << "[" << std::hex << planet.starId << "-" << planet.planetId << std::dec << "] {\n";
@@ -13,18 +52,19 @@ std::ostream& operator<<(std::ostream& out, const Planet& planet)
 	return out; 
 }
 
-Planet::Planet(int starId, CreationGuard) : starId{starId}
+Planet::Planet(int starId, CreationGuard) 
+	: starId {starId}
+	, planetId {generatePlanetId()}
+	, spiceCapacity {generateSpiceCapacityInfo()}
+	, spiceBuyCost {generateBuyPrice()}
+	, spiceSellCost {generateSellPrice(spiceBuyCost)}
+	, refreshPeriod {generateCycleRefreshPeriod()}
+	, spiceInStock {spiceCapacity}
+	, cyclesUntilRefresh {refreshPeriod}
 {
-	std::random_device randomDevice;
-	std::mt19937 gen(randomDevice());
-
-	generatePlanetId(gen);
-	generateSpiceInfo(gen);
-	generatePrices(gen);
-	generateCycleInfo(gen);
 }
 
-std::shared_ptr<Planet> Planet::create(int starId, Time::GameTimeService& gameTimeService)
+PlanetPtr Planet::create(int starId, Time::GameTimeService& gameTimeService)
 {
 	auto planet = std::make_shared<Planet>(starId, CreationGuard{});
 	gameTimeService.subscribe(planet);
@@ -45,12 +85,12 @@ void Planet::tick()
 	}
 }
 
-float Planet::getSpiceSellCost()
+float Planet::getSpiceSellCost() const
 {
 	return spiceSellCost;
 }
 
-float Planet::getSpiceBuyCost()
+float Planet::getSpiceBuyCost() const
 {
 	return spiceBuyCost;
 }
@@ -62,44 +102,5 @@ float Planet::buySpice(float amount)
 	spiceInStock -= amount;
 
 	return amount * spiceBuyCost;
-}
-
-void Planet::generatePlanetId(RandomEngine& engine)
-{
-	constexpr auto lowerIdBound = 0x01000000;
-	constexpr auto upperIdBound = 0x0FFFFFFF;
-	std::uniform_int_distribution<> distribution(lowerIdBound, upperIdBound);
-	planetId = distribution(engine);
-}
-
-void Planet::generateSpiceInfo(RandomEngine& engine)
-{
-	constexpr auto lowerSpiceStockBound = 10.0;
-	constexpr auto upperSpiceStockBound = 50.0;
-	std::uniform_real_distribution<> distribution(lowerSpiceStockBound, upperSpiceStockBound);
-	spiceCapacity = static_cast<float>(distribution(engine));
-	spiceInStock = spiceCapacity;
-}
-
-void Planet::generatePrices(RandomEngine& engine)
-{
-	constexpr auto lowerBasePriceRange = 50.0;
-	constexpr auto upperBasePriceRange = 300.0;
-	std::uniform_real_distribution<> buyPriceDistribution(lowerBasePriceRange, upperBasePriceRange);
-	spiceBuyCost = static_cast<float>(buyPriceDistribution(engine));
-
-	constexpr auto lowerSellPriceMultiplier = 1.05;
-	constexpr auto upperSellPriceMultiplier = 1.5;
-	std::uniform_real_distribution<> sellPriceMultiplierDistribution(lowerSellPriceMultiplier, upperSellPriceMultiplier);
-	spiceSellCost = spiceBuyCost * static_cast<float>(sellPriceMultiplierDistribution(engine));
-}
-
-void Planet::generateCycleInfo(RandomEngine& engine)
-{
-	constexpr auto lowerCycleBoundary = 2;
-	constexpr auto upperCycleBoundary = 5;
-	std::uniform_int_distribution<> cycleDistribution(lowerCycleBoundary, upperCycleBoundary);
-	refreshPeriod = cycleDistribution(engine);
-	cyclesUntilRefresh = refreshPeriod;
 }
 } // namespace GameMap
