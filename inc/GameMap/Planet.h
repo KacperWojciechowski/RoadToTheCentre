@@ -10,7 +10,7 @@ class Planet;
 
 using PlanetPtr = std::shared_ptr<Planet>;
 
-class Planet : public Time::ITimeObserver
+class Planet : public Time::ITimeObserver, public std::enable_shared_from_this<Planet>
 {
 	struct CreationGuard {};
 
@@ -24,13 +24,17 @@ public:
 	Planet& operator=(const Planet&) = delete;
 	Planet& operator=(Planet&&) = delete;
 
+	bool operator==(const Planet&);
+
 	friend std::ostream& operator<<(std::ostream&, const Planet&);
 
 	void tick() override;
+	void addAdjacentPlanet(std::weak_ptr<Planet>);
 
 	float getSpiceSellCost() const;
 	float getSpiceBuyCost() const;
 	float buySpice(float amount);
+
 private:
 	const int starId = {};
 	const int planetId = {};
@@ -41,5 +45,7 @@ private:
 	
 	float spiceInStock = {};
 	int cyclesUntilRefresh = {};
+
+	std::vector<std::weak_ptr<Planet>> adjacentPlanets;
 };
 } // namespace GameMap

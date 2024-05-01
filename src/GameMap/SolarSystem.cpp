@@ -18,6 +18,13 @@ int randomizeStarId()
 	constexpr auto upperBound = 0x0FFFFFFF;
 	return utility::RandomGenerator::getInt(lowerBound, upperBound);
 }
+
+int randomizeTravelCost()
+{
+	constexpr auto lowerBound = 0.3f;
+	constexpr auto upperBound = 1.0f;
+	return utility::RandomGenerator::getFloat(lowerBound, upperBound);
+}
 } // namespace
 
 std::shared_ptr<SolarSystem> SolarSystem::create(Time::GameTimeService& gameTimeService)
@@ -26,6 +33,8 @@ std::shared_ptr<SolarSystem> SolarSystem::create(Time::GameTimeService& gameTime
 	auto starId = randomizeStarId();
 
 	std::vector<PlanetPtr> planetsContainer;
+	planetsContainer.reserve(planetCount);
+
 	for (int i = 0; i < planetCount; i++)
 	{
 		planetsContainer.emplace_back(std::move(Planet::create(starId, gameTimeService)));
@@ -35,16 +44,49 @@ std::shared_ptr<SolarSystem> SolarSystem::create(Time::GameTimeService& gameTime
 }
 	
 SolarSystem::SolarSystem(std::vector<PlanetPtr>&& planetsContainer, CreationGuard) 
-	: planets(std::move(planetsContainer))
+	: interplanetaryTravelCost(randomizeTravelCost())
+	, planets(std::move(planetsContainer))
 {
+	interconnectPlanets();
 }
-Planet& SolarSystem::operator[](int planetIndex)
+
+SolarSystem::const_iterator SolarSystem::begin()
 {
-	return *(planets.at(planetIndex));
+	return planets.cbegin();
 }
-std::size_t SolarSystem::getPlanetCount()
+
+SolarSystem::const_iterator SolarSystem::end()
+{
+	return planets.cend();
+}
+
+PlanetPtr SolarSystem::operator[](int planetIndex)
+{
+	return planets.at(planetIndex);
+}
+
+std::size_t SolarSystem::getPlanetCount() const
 {
 	return planets.size();
+}
+
+float SolarSystem::getInterplanetaryTravelCost() const
+{
+	return interplanetaryTravelCost;
+}
+
+void SolarSystem::interconnectPlanets()
+{
+	for (auto currentPlanet = planets.begin(); currentPlanet != planets.end(); currentPlanet++)
+	{
+		for (auto nextPlanet = std::next(currentPlanet, 1); nextPlanet != planets.end(); nextPlanet++)
+		{
+			if (*currentPlanet and *nextPlanet)
+			{
+				(*currentPlanet)->addAdjacentPlanet(*nextPlanet);
+			}
+		}
+	}
 }
 
 std::ostream& operator<<(std::ostream& out, const SolarSystem& solarSystem)

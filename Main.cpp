@@ -12,7 +12,7 @@ int main()
 		std::cout << *system << std::endl;
 		for (int i = 0; i < system->getPlanetCount(); i++)
 		{
-			(*system)[i].buySpice(1);
+			(*system)[i]->buySpice(1);
 		}
 		gts.update();
 	}

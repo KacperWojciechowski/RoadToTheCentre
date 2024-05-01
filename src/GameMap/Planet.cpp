@@ -1,6 +1,7 @@
 #include <GameMap/Planet.h>
 #include <Utility/RandomGenerator.h>
 #include <cassert>
+#include <algorithm>
 
 namespace GameMap
 {
@@ -41,6 +42,14 @@ int generateCycleRefreshPeriod()
 	constexpr auto upperBound = 5;
 	return utility::RandomGenerator::getInt(lowerBound, upperBound);
 }
+
+bool isNotMarkedAsAdjacent(std::vector<std::weak_ptr<Planet>> adjPlanets, std::shared_ptr<Planet> planet)
+{
+	auto planetChecker = [&planet](auto checkedPlanet) {
+		return checkedPlanet.lock() == planet;
+	};
+	return adjPlanets.end() != std::ranges::find_if(adjPlanets, planetChecker);
+}
 } // namespace::
 
 std::ostream& operator<<(std::ostream& out, const Planet& planet)
@@ -72,6 +81,16 @@ PlanetPtr Planet::create(int starId, Time::GameTimeService& gameTimeService)
 	return planet;
 }
 
+bool Planet::operator==(const Planet& other)
+{
+	return (starId == other.starId
+		and planetId == other.planetId
+		and spiceCapacity == other.spiceCapacity
+		and spiceBuyCost == other.spiceBuyCost
+		and spiceSellCost == other.spiceSellCost
+		and refreshPeriod == other.refreshPeriod);
+}
+
 void Planet::tick()
 {
 	if (spiceInStock != spiceCapacity)
@@ -82,6 +101,16 @@ void Planet::tick()
 	{
 		spiceInStock = spiceCapacity;
 		cyclesUntilRefresh = refreshPeriod;
+	}
+}
+
+void Planet::addAdjacentPlanet(std::weak_ptr<Planet> planet)
+{
+	auto tgtPlanet = planet.lock();
+	if (tgtPlanet and isNotMarkedAsAdjacent(adjacentPlanets, tgtPlanet) and (*tgtPlanet) != (*this))
+	{
+		adjacentPlanets.emplace_back(planet);
+		tgtPlanet->addAdjacentPlanet(shared_from_this());
 	}
 }
 
