@@ -146,6 +146,7 @@
     <ClInclude Include="inc\GameMap\Galaxy.h" />
     <ClInclude Include="inc\GameMap\Planet.h" />
     <ClInclude Include="inc\GameMap\SolarSystem.h" />
+    <ClInclude Include="inc\Mechanics\TravelAgent.h" />
     <ClInclude Include="inc\TimeServices\GameTimeService.h" />
     <ClInclude Include="inc\TimeServices\ITimeObserver.h" />
     <ClInclude Include="inc\Utility\RandomGenerator.h" />

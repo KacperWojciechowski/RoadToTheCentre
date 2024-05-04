@@ -31,6 +31,9 @@
     <Filter Include="Source Files\Utility">
       <UniqueIdentifier>{a4c2b331-3416-434d-b3ad-b1b58d4d6a24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Mechanics">
+      <UniqueIdentifier>{53b478ee-7165-441f-a1a6-e25bddfbaa4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -70,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="inc\GameMap\Galaxy.h">
       <Filter>Header Files\GameMap</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Mechanics\TravelAgent.h">
+      <Filter>Header Files\Mechanics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

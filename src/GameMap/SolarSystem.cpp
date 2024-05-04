@@ -44,10 +44,9 @@ std::shared_ptr<SolarSystem> SolarSystem::create(Time::GameTimeService& gameTime
 }
 	
 SolarSystem::SolarSystem(std::vector<PlanetPtr>&& planetsContainer, CreationGuard) 
-	: interplanetaryTravelCost(randomizeTravelCost())
-	, planets(std::move(planetsContainer))
+	: planets(std::move(planetsContainer))
 {
-	interconnectPlanets();
+	interconnectPlanets(randomizeTravelCost());
 }
 
 SolarSystem::const_iterator SolarSystem::begin()
@@ -70,7 +69,19 @@ std::size_t SolarSystem::getPlanetCount() const
 	return planets.size();
 }
 
-void SolarSystem::interconnectPlanets()
+void SolarSystem::linkSolarSystems(std::weak_ptr<SolarSystem> solarSystem, float travelCost)
+{
+	auto system = solarSystem.lock();
+	for (auto adjPlanet = system->begin(); adjPlanet != system->end(); adjPlanet++)
+	{
+		for (auto ownPlanet = begin(); ownPlanet != end(); ownPlanet++)
+		{
+			(*ownPlanet)->connectInterStelarPlanet(*adjPlanet, travelCost);
+		}
+	}
+}
+
+void SolarSystem::interconnectPlanets(float travelCost)
 {
 	for (auto currentPlanet = planets.begin(); currentPlanet != planets.end(); currentPlanet++)
 	{
@@ -78,7 +89,7 @@ void SolarSystem::interconnectPlanets()
 		{
 			if (*currentPlanet and *nextPlanet)
 			{
-				(*currentPlanet)->connectIntraSystemPlanet(*nextPlanet, interplanetaryTravelCost);
+				(*currentPlanet)->connectIntraSystemPlanet(*nextPlanet, travelCost);
 			}
 		}
 	}
