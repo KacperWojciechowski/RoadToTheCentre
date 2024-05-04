@@ -42,14 +42,6 @@ int generateCycleRefreshPeriod()
 	constexpr auto upperBound = 5;
 	return utility::RandomGenerator::getInt(lowerBound, upperBound);
 }
-
-bool isNotMarkedAsAdjacent(std::vector<std::weak_ptr<Planet>> adjPlanets, std::shared_ptr<Planet> planet)
-{
-	auto planetChecker = [&planet](auto checkedPlanet) {
-		return checkedPlanet.lock() == planet;
-	};
-	return adjPlanets.end() != std::ranges::find_if(adjPlanets, planetChecker);
-}
 } // namespace::
 
 std::ostream& operator<<(std::ostream& out, const Planet& planet)
@@ -104,13 +96,33 @@ void Planet::tick()
 	}
 }
 
-void Planet::addAdjacentPlanet(std::weak_ptr<Planet> planet)
+void Planet::connectIntraSystemPlanet(std::weak_ptr<Planet> planet, float travelCost)
+{
+	addAdjacentPlanet(planet, AdjacencyType::intraSystem, travelCost);
+}
+
+void Planet::connectInterStelarPlanet(std::weak_ptr<Planet> planet, float travelCost)
+{
+	addAdjacentPlanet(planet, AdjacencyType::interStelar, travelCost);
+}
+
+void Planet::addAdjacentPlanet(std::weak_ptr<Planet> planet, AdjacencyType adjType, float travelCost)
 {
 	auto tgtPlanet = planet.lock();
-	if (tgtPlanet and isNotMarkedAsAdjacent(adjacentPlanets, tgtPlanet) and (*tgtPlanet) != (*this))
+	
+	auto planetChecker = [&tgtPlanet](AdjacencyInfo& checkedPlanet) {
+		return checkedPlanet.adjPlanet.lock() == tgtPlanet;
+	};
+	
+	auto isNotMarkedAsAdjacent = [&planetChecker, this](std::shared_ptr<Planet> tgtPlanet) {
+
+		return adjacentPlanets.end() != std::ranges::find_if(adjacentPlanets, planetChecker);
+	};
+	
+	if (tgtPlanet and isNotMarkedAsAdjacent(tgtPlanet) and (*tgtPlanet) != (*this))
 	{
-		adjacentPlanets.emplace_back(planet);
-		tgtPlanet->addAdjacentPlanet(shared_from_this());
+		adjacentPlanets.emplace_back(planet, adjType, travelCost);
+		tgtPlanet->addAdjacentPlanet(shared_from_this(), adjType, travelCost);
 	}
 }
 

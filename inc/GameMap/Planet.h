@@ -29,13 +29,30 @@ public:
 	friend std::ostream& operator<<(std::ostream&, const Planet&);
 
 	void tick() override;
-	void addAdjacentPlanet(std::weak_ptr<Planet>);
+
+	void connectIntraSystemPlanet(std::weak_ptr<Planet>, float);
+	void connectInterStelarPlanet(std::weak_ptr<Planet>, float);
 
 	float getSpiceSellCost() const;
 	float getSpiceBuyCost() const;
 	float buySpice(float amount);
 
 private:
+	enum class AdjacencyType
+	{
+		intraSystem,
+		interStelar
+	};
+
+	struct AdjacencyInfo
+	{
+		std::weak_ptr<Planet> adjPlanet;
+		AdjacencyType adjType;
+		float travelCost;
+	};
+	
+	void addAdjacentPlanet(std::weak_ptr<Planet>, AdjacencyType, float);
+
 	const int starId = {};
 	const int planetId = {};
 	const float spiceCapacity = {};
@@ -46,6 +63,6 @@ private:
 	float spiceInStock = {};
 	int cyclesUntilRefresh = {};
 
-	std::vector<std::weak_ptr<Planet>> adjacentPlanets;
+	std::vector<AdjacencyInfo> adjacentPlanets;
 };
 } // namespace GameMap

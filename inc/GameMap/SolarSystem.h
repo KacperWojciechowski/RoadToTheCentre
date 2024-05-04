@@ -35,12 +35,12 @@ public:
 	PlanetPtr operator[](int planetIndex);
 	
 	std::size_t getPlanetCount() const;
-	float getInterplanetaryTravelCost() const;
+
+	void linkSolarSystems(std::weak_ptr<SolarSystem>, float);
 
 private:
-	void interconnectPlanets();
+	void interconnectPlanets(float);
 
-	float interplanetaryTravelCost;
 	const std::vector<PlanetPtr> planets;
 };
 } // namespace GameMap

@@ -70,11 +70,6 @@ std::size_t SolarSystem::getPlanetCount() const
 	return planets.size();
 }
 
-float SolarSystem::getInterplanetaryTravelCost() const
-{
-	return interplanetaryTravelCost;
-}
-
 void SolarSystem::interconnectPlanets()
 {
 	for (auto currentPlanet = planets.begin(); currentPlanet != planets.end(); currentPlanet++)
@@ -83,7 +78,7 @@ void SolarSystem::interconnectPlanets()
 		{
 			if (*currentPlanet and *nextPlanet)
 			{
-				(*currentPlanet)->addAdjacentPlanet(*nextPlanet);
+				(*currentPlanet)->connectIntraSystemPlanet(*nextPlanet, interplanetaryTravelCost);
 			}
 		}
 	}
