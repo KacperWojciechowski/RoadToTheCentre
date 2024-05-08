@@ -19,7 +19,7 @@ int randomizeStarId()
 	return utility::RandomGenerator::getInt(lowerBound, upperBound);
 }
 
-int randomizeTravelCost()
+float randomizeTravelCost()
 {
 	constexpr auto lowerBound = 0.3f;
 	constexpr auto upperBound = 1.0f;

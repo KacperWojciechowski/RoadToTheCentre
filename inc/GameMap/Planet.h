@@ -3,6 +3,7 @@
 #include <iostream>
 #include <random>
 #include <TimeServices/GameTimeService.h>
+#include <GameMap/AdjacencyType.h>
 
 namespace GameMap
 {
@@ -15,6 +16,13 @@ class Planet : public Time::ITimeObserver, public std::enable_shared_from_this<P
 	struct CreationGuard {};
 
 public:
+	struct AdjacencyInfo
+	{
+		std::weak_ptr<Planet> adjPlanet;
+		AdjacencyType adjType;
+		float travelCost;
+	};
+
 	static PlanetPtr create(int starId, Time::GameTimeService&);
 
 	Planet(int starId, CreationGuard);
@@ -24,7 +32,8 @@ public:
 	Planet& operator=(const Planet&) = delete;
 	Planet& operator=(Planet&&) = delete;
 
-	bool operator==(const Planet&);
+	bool operator==(const Planet&) const;
+	bool operator!=(const Planet&) const;
 
 	friend std::ostream& operator<<(std::ostream&, const Planet&);
 
@@ -36,21 +45,15 @@ public:
 	float getSpiceSellCost() const;
 	float getSpiceBuyCost() const;
 	float buySpice(float amount);
+	float sellSpice(float amount);
 
+	void printAdjacencyPlanetsInfo(std::ostream&);
+
+	void setAsEndPlanet();
+	bool isEndPlanet();
+
+	AdjacencyInfo getAdjacentPlanetInfo(std::size_t);
 private:
-	enum class AdjacencyType
-	{
-		intraSystem,
-		interStelar
-	};
-
-	struct AdjacencyInfo
-	{
-		std::weak_ptr<Planet> adjPlanet;
-		AdjacencyType adjType;
-		float travelCost;
-	};
-	
 	void addAdjacentPlanet(std::weak_ptr<Planet>, AdjacencyType, float);
 
 	const int starId = {};
@@ -62,6 +65,8 @@ private:
 	
 	float spiceInStock = {};
 	int cyclesUntilRefresh = {};
+
+	bool endPlanet = false;
 
 	std::vector<AdjacencyInfo> adjacentPlanets;
 };

@@ -34,6 +34,9 @@
     <Filter Include="Header Files\Mechanics">
       <UniqueIdentifier>{53b478ee-7165-441f-a1a6-e25bddfbaa4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Mechanics">
+      <UniqueIdentifier>{374b48b3-c67e-40d7-8d9f-56cdb2af8482}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -53,6 +56,12 @@
     </ClCompile>
     <ClCompile Include="src\GameMap\Galaxy.cpp">
       <Filter>Source Files\GameMap</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mechanics\TravelAgent.cpp">
+      <Filter>Source Files\Mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utility\EnumSerializer.cpp">
+      <Filter>Source Files\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +85,12 @@
     </ClInclude>
     <ClInclude Include="inc\Mechanics\TravelAgent.h">
       <Filter>Header Files\Mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GameMap\AdjacencyType.h">
+      <Filter>Header Files\GameMap</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Utility\EnumSerializer.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

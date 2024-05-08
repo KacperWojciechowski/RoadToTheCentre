@@ -2,6 +2,8 @@
 #include <Utility/RandomGenerator.h>
 #include <cassert>
 #include <algorithm>
+#include <Utility/EnumSerializer.h>
+#include <GameMap/AdjacencyType.h>
 
 namespace GameMap
 {
@@ -73,7 +75,7 @@ PlanetPtr Planet::create(int starId, Time::GameTimeService& gameTimeService)
 	return planet;
 }
 
-bool Planet::operator==(const Planet& other)
+bool Planet::operator==(const Planet& other) const
 {
 	return (starId == other.starId
 		and planetId == other.planetId
@@ -81,6 +83,11 @@ bool Planet::operator==(const Planet& other)
 		and spiceBuyCost == other.spiceBuyCost
 		and spiceSellCost == other.spiceSellCost
 		and refreshPeriod == other.refreshPeriod);
+}
+
+bool Planet::operator!=(const Planet& other) const
+{
+	return not ((*this) == other);
 }
 
 void Planet::tick()
@@ -113,13 +120,9 @@ void Planet::addAdjacentPlanet(std::weak_ptr<Planet> planet, AdjacencyType adjTy
 	auto planetChecker = [&tgtPlanet](AdjacencyInfo& checkedPlanet) {
 		return checkedPlanet.adjPlanet.lock() == tgtPlanet;
 	};
+	auto isMarkedAsAdjacent = adjacentPlanets.end() != std::ranges::find_if(adjacentPlanets, planetChecker);
 	
-	auto isNotMarkedAsAdjacent = [&planetChecker, this](std::shared_ptr<Planet> tgtPlanet) {
-
-		return adjacentPlanets.end() != std::ranges::find_if(adjacentPlanets, planetChecker);
-	};
-	
-	if (tgtPlanet and isNotMarkedAsAdjacent(tgtPlanet) and (*tgtPlanet) != (*this))
+	if (tgtPlanet and isMarkedAsAdjacent and (*tgtPlanet) != (*this))
 	{
 		adjacentPlanets.emplace_back(planet, adjType, travelCost);
 		tgtPlanet->addAdjacentPlanet(shared_from_this(), adjType, travelCost);
@@ -143,5 +146,52 @@ float Planet::buySpice(float amount)
 	spiceInStock -= amount;
 
 	return amount * spiceBuyCost;
+}
+
+float Planet::sellSpice(float amount)
+{
+	return amount * spiceSellCost;
+}
+
+void Planet::printAdjacencyPlanetsInfo(std::ostream& out)
+{
+	int planetIdx = 1;
+	out << "== Adjacency planets: ==\n";
+	for (auto& adjInfo : adjacentPlanets)
+	{
+		auto planetPtr = adjInfo.adjPlanet.lock();
+		if (planetPtr)
+		{
+			out << planetIdx << ". " << planetPtr;
+			out << "Travel type: " 
+				<< utility::EnumSerializer<AdjacencyType>(adjInfo.adjType)() 
+				<< ", travel cost: " 
+				<< adjInfo.travelCost 
+				<< "\n----\n";
+		}
+		planetIdx++;
+	}
+}
+
+void Planet::setAsEndPlanet()
+{
+	endPlanet = true;
+}
+
+bool Planet::isEndPlanet()
+{
+	return endPlanet;
+}
+Planet::AdjacencyInfo Planet::getAdjacentPlanetInfo(std::size_t idx)
+{
+	if (idx >= adjacentPlanets.size())
+	{
+		return {};
+	}
+	if (adjacentPlanets.at(idx).adjPlanet.lock())
+	{
+		return adjacentPlanets.at(idx);
+	}
+
 }
 } // namespace GameMap
