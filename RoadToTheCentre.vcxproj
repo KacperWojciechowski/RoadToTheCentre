@@ -76,6 +76,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\Repozytoria\C++\RoadToTheCentre\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -90,6 +92,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\Repozytoria\C++\RoadToTheCentre\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -104,6 +108,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\Repozytoria\C++\RoadToTheCentre\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,6 +124,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\Repozytoria\C++\RoadToTheCentre\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +136,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="src\GameMap\Galaxy.cpp" />
+    <ClCompile Include="src\GameMap\Planet.cpp" />
+    <ClCompile Include="src\GameMap\SolarSystem.cpp" />
+    <ClCompile Include="src\Mechanics\TravelAgent.cpp" />
+    <ClCompile Include="src\TimeServices\GameTimeService.cpp" />
+    <ClCompile Include="src\Utility\EnumSerializer.cpp" />
+    <ClCompile Include="src\Utility\RandomGenerator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\GameMap\AdjacencyType.h" />
+    <ClInclude Include="inc\GameMap\Galaxy.h" />
+    <ClInclude Include="inc\GameMap\Planet.h" />
+    <ClInclude Include="inc\GameMap\SolarSystem.h" />
+    <ClInclude Include="inc\Mechanics\TravelAgent.h" />
+    <ClInclude Include="inc\TimeServices\GameTimeService.h" />
+    <ClInclude Include="inc\TimeServices\ITimeObserver.h" />
+    <ClInclude Include="inc\Utility\EnumSerializer.h" />
+    <ClInclude Include="inc\Utility\RandomGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
