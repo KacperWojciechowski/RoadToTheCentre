@@ -3,7 +3,6 @@
 #include <cassert>
 #include <algorithm>
 #include <Utility/EnumSerializer.h>
-#include <GameMap/AdjacencyType.h>
 
 namespace GameMap
 {
@@ -50,7 +49,7 @@ std::ostream& operator<<(std::ostream& out, const Planet& planet)
 {
 	out << "[" << std::hex << planet.starId << "-" << planet.planetId << std::dec << "] {\n";
 	out << "\tspices stock = " << planet.spiceInStock << "/" << planet.spiceCapacity << " tons\n";
-	out << "\tpricing [buy/sell] = " << planet.spiceBuyCost << "/" << planet.spiceSellCost << "blix\n";
+	out << "\tpricing [buy/sell] = " << planet.spiceBuyCost << "/" << planet.spiceSellCost << " blix\n";
 	out << "\ttime until refresh = " << planet.cyclesUntilRefresh << "\n}\n";
 	return out; 
 }
@@ -188,10 +187,10 @@ Planet::AdjacencyInfo Planet::getAdjacentPlanetInfo(std::size_t idx)
 	{
 		return {};
 	}
-	if (adjacentPlanets.at(idx).adjPlanet.lock())
+	if (not adjacentPlanets.at(idx).adjPlanet.lock())
 	{
-		return adjacentPlanets.at(idx);
+		return {};
 	}
-
+	return adjacentPlanets.at(idx);
 }
 } // namespace GameMap

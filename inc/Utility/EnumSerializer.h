@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <GameMap/AdjacencyType.h>
 
 namespace utility
 {
@@ -10,8 +11,21 @@ class EnumSerializer
 public:
 	EnumSerializer(EnumType val) : val(val) {}
 
-	std::string operator()() {}
+	inline std::string operator()() { return ""; }
 private:
 	const EnumType val;
 };
+
+inline std::string EnumSerializer<GameMap::AdjacencyType>::operator()()
+{
+	switch (val)
+	{
+	case GameMap::AdjacencyType::intraSystem:
+		return "intraSystem";
+	case GameMap::AdjacencyType::interStelar:
+		return "interStelar";
+	default:
+		return "";
+	}
+}
 } // namespace utility

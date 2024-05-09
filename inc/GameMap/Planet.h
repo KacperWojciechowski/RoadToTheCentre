@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <random>
-#include <TimeServices/GameTimeService.h>
+#include <Services/GameTimeService.h>
 #include <GameMap/AdjacencyType.h>
 
 namespace GameMap
