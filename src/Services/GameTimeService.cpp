@@ -1,4 +1,4 @@
-#include <TimeServices/GameTimeService.h>
+#include <Services/GameTimeService.h>
 
 namespace Time
 {

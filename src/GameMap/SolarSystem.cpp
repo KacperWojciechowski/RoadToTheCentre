@@ -97,7 +97,7 @@ void SolarSystem::interconnectPlanets(float travelCost)
 
 std::ostream& operator<<(std::ostream& out, const SolarSystem& solarSystem)
 {
-	out << "[SolarSystem] {\n";
+	out << "[SolarSystem] { -----------------------------------------------\n";
 	for (auto planet = solarSystem.planets.cbegin(); planet != solarSystem.planets.cend(); planet++)
 	{
 		out << **planet;

@@ -16,14 +16,8 @@
     <Filter Include="Header Files\GameMap">
       <UniqueIdentifier>{ab968311-7613-4a90-ae34-bcf93960f637}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\TimeServices">
-      <UniqueIdentifier>{99957cca-afea-428f-a811-2f0290bbfba4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\GameMap">
       <UniqueIdentifier>{b0eab564-3642-4401-9268-c35de5e5e67a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\TimeServices">
-      <UniqueIdentifier>{867e5439-1494-4b1f-8ecf-0e9ba4a2c913}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Utility">
       <UniqueIdentifier>{a5d74317-7ed8-40f5-a667-e4b6249f2710}</UniqueIdentifier>
@@ -37,6 +31,24 @@
     <Filter Include="Source Files\Mechanics">
       <UniqueIdentifier>{374b48b3-c67e-40d7-8d9f-56cdb2af8482}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Entities">
+      <UniqueIdentifier>{9a6058f6-c319-485c-b61e-db221d9957f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities">
+      <UniqueIdentifier>{2ed80907-b1b7-4d12-8a07-decf1443084a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{feef336a-244f-4689-bd4b-1a6b8666a5c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Services">
+      <UniqueIdentifier>{99957cca-afea-428f-a811-2f0290bbfba4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Services">
+      <UniqueIdentifier>{867e5439-1494-4b1f-8ecf-0e9ba4a2c913}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{a4565d9c-d9ba-4a49-9249-f0969b0366cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -44,9 +56,6 @@
     </ClCompile>
     <ClCompile Include="src\GameMap\Planet.cpp">
       <Filter>Source Files\GameMap</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TimeServices\GameTimeService.cpp">
-      <Filter>Source Files\TimeServices</Filter>
     </ClCompile>
     <ClCompile Include="src\GameMap\SolarSystem.cpp">
       <Filter>Source Files\GameMap</Filter>
@@ -60,19 +69,19 @@
     <ClCompile Include="src\Mechanics\TravelAgent.cpp">
       <Filter>Source Files\Mechanics</Filter>
     </ClCompile>
-    <ClCompile Include="src\Utility\EnumSerializer.cpp">
-      <Filter>Source Files\Utility</Filter>
+    <ClCompile Include="src\Entities\Player.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Services\GameTimeService.cpp">
+      <Filter>Source Files\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Game.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameMap\Planet.h">
       <Filter>Header Files\GameMap</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\TimeServices\GameTimeService.h">
-      <Filter>Header Files\TimeServices</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\TimeServices\ITimeObserver.h">
-      <Filter>Header Files\TimeServices</Filter>
     </ClInclude>
     <ClInclude Include="inc\GameMap\SolarSystem.h">
       <Filter>Header Files\GameMap</Filter>
@@ -91,6 +100,18 @@
     </ClInclude>
     <ClInclude Include="inc\Utility\EnumSerializer.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Entities\Player.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Services\GameTimeService.h">
+      <Filter>Header Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Services\ITimeObserver.h">
+      <Filter>Header Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Core\Game.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

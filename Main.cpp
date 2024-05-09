@@ -1,21 +1,11 @@
-#include <iostream>
-#include <TimeServices/GameTimeService.h>
-#include <GameMap/SolarSystem.h>
+#include <Services/GameTimeService.h>
+#include <Core/Game.h>
 
 int main()
 {
 	auto gts = Time::GameTimeService{};
-	auto system = GameMap::SolarSystem::create(gts);
-
-	for (int i = 0; i < 10; i++)
-	{
-		std::cout << *system << std::endl;
-		for (int i = 0; i < system->getPlanetCount(); i++)
-		{
-			(*system)[i]->buySpice(1);
-		}
-		gts.update();
-	}
+	auto game = core::Game{ std::move(gts) };
+	game.start();
 
 	return 0;
 }

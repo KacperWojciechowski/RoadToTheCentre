@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GameMap/SolarSystem.h>
-#include <TimeServices/GameTimeService.h>
+#include <Services/GameTimeService.h>
 #include <vector>
 #include <iostream>
 
@@ -14,8 +14,8 @@ public:
 
 	Galaxy(Time::GameTimeService&);
 
-	SystemLayer& operator[](std::size_t layerIndex);
-	friend std::ostream& operator<<(std::ostream& out, const Galaxy&);
+	SystemLayer& operator[](std::size_t);
+	friend std::ostream& operator<<(std::ostream&, const Galaxy&);
 
 private:
 	std::vector<SystemLayer> layers;
