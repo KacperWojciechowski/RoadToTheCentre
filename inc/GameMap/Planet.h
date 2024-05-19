@@ -42,10 +42,12 @@ public:
 	void connectIntraSystemPlanet(std::weak_ptr<Planet>, float);
 	void connectInterStelarPlanet(std::weak_ptr<Planet>, float);
 
-	float getSpiceSellCost() const;
-	float getSpiceBuyCost() const;
-	float buySpice(float amount);
-	float sellSpice(float amount);
+	float getSpiceSellCost(float);
+	float getSpiceBuyCost(float);
+	float buySpice(float);
+	float sellSpice(float);
+	float getSpicesInStock(float);
+	float getAdjacentPlanetCount(float);
 
 	void printAdjacencyPlanetsInfo(std::ostream&);
 
@@ -59,8 +61,8 @@ private:
 	const int starId = {};
 	const int planetId = {};
 	const float spiceCapacity = {};
-	const float spiceBuyCost = {};
 	const float spiceSellCost = {};
+	const float spiceBuyCost = {};
 	const int refreshPeriod = {};
 	
 	float spiceInStock = {};

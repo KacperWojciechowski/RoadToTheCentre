@@ -22,7 +22,7 @@ float generateSpiceCapacityInfo()
 	return utility::RandomGenerator::getFloat(lowerBound, upperBound);
 }
 
-float generateSellPrice(float buyPrice)
+float generateBuyPrice(float buyPrice)
 {
 	constexpr auto lowerSellMultiplierBound = 1.05f;
 	constexpr auto upperSellMultiplierBound = 1.5f;
@@ -30,7 +30,7 @@ float generateSellPrice(float buyPrice)
 	return buyPrice * utility::RandomGenerator::getFloat(lowerSellMultiplierBound, upperSellMultiplierBound);
 }
 
-float generateBuyPrice()
+float generateSellPrice()
 {
 	constexpr auto lowerBasePriceBound = 50.0f;
 	constexpr auto upperBasePriceBound = 300.0f;
@@ -58,8 +58,8 @@ Planet::Planet(int starId, CreationGuard)
 	: starId {starId}
 	, planetId {generatePlanetId()}
 	, spiceCapacity {generateSpiceCapacityInfo()}
-	, spiceBuyCost {generateBuyPrice()}
-	, spiceSellCost {generateSellPrice(spiceBuyCost)}
+	, spiceSellCost {generateSellPrice()}
+	, spiceBuyCost {generateBuyPrice(spiceSellCost)}
 	, refreshPeriod {generateCycleRefreshPeriod()}
 	, spiceInStock {spiceCapacity}
 	, cyclesUntilRefresh {refreshPeriod}
@@ -121,27 +121,29 @@ void Planet::addAdjacentPlanet(std::weak_ptr<Planet> planet, AdjacencyType adjTy
 	};
 	auto isMarkedAsAdjacent = adjacentPlanets.end() != std::ranges::find_if(adjacentPlanets, planetChecker);
 	
-	if (tgtPlanet and isMarkedAsAdjacent and (*tgtPlanet) != (*this))
+	if (tgtPlanet and not isMarkedAsAdjacent and (*tgtPlanet) != (*this))
 	{
 		adjacentPlanets.emplace_back(planet, adjType, travelCost);
 		tgtPlanet->addAdjacentPlanet(shared_from_this(), adjType, travelCost);
 	}
 }
 
-float Planet::getSpiceSellCost() const
+float Planet::getSpiceSellCost(float amount)
 {
-	return spiceSellCost;
+	return spiceSellCost * amount;
 }
 
-float Planet::getSpiceBuyCost() const
+float Planet::getSpiceBuyCost(float amount)
 {
-	return spiceBuyCost;
+	return spiceBuyCost * amount;
 }
 
 float Planet::buySpice(float amount)
 {
-	assert(amount <= spiceInStock);
-
+	if (amount > spiceInStock)
+	{
+		throw std::invalid_argument("Cannot buy more spice than in stock");
+	}
 	spiceInStock -= amount;
 
 	return amount * spiceBuyCost;
@@ -149,23 +151,31 @@ float Planet::buySpice(float amount)
 
 float Planet::sellSpice(float amount)
 {
+	bool willCapacityOverflow = spiceInStock + amount > spiceCapacity;
+	spiceInStock = willCapacityOverflow ? spiceCapacity : spiceInStock + amount;
 	return amount * spiceSellCost;
+}
+
+float Planet::getSpicesInStock(float)
+{
+	return spiceInStock;
 }
 
 void Planet::printAdjacencyPlanetsInfo(std::ostream& out)
 {
 	int planetIdx = 1;
-	out << "== Adjacency planets: ==\n";
 	for (auto& adjInfo : adjacentPlanets)
 	{
 		auto planetPtr = adjInfo.adjPlanet.lock();
 		if (planetPtr)
 		{
-			out << planetIdx << ". " << planetPtr;
+			out << planetIdx << ". " << *planetPtr;
 			out << "Travel type: " 
 				<< utility::EnumSerializer<AdjacencyType>(adjInfo.adjType)() 
-				<< ", travel cost: " 
+				<< ", travel cost in spices: " 
 				<< adjInfo.travelCost 
+				<< "\nIs this an end planet ? "
+				<< (planetPtr->endPlanet ? "yes" : "no")
 				<< "\n----\n";
 		}
 		planetIdx++;
@@ -181,6 +191,7 @@ bool Planet::isEndPlanet()
 {
 	return endPlanet;
 }
+
 Planet::AdjacencyInfo Planet::getAdjacentPlanetInfo(std::size_t idx)
 {
 	if (idx >= adjacentPlanets.size())
@@ -192,5 +203,10 @@ Planet::AdjacencyInfo Planet::getAdjacentPlanetInfo(std::size_t idx)
 		return {};
 	}
 	return adjacentPlanets.at(idx);
+}
+
+float Planet::getAdjacentPlanetCount(float)
+{
+	return static_cast<float>(adjacentPlanets.size());
 }
 } // namespace GameMap

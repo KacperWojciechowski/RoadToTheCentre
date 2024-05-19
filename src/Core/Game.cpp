@@ -1,5 +1,8 @@
 #include <Core/Game.h>
 #include <Utility/RandomGenerator.h>
+#include <UI/ActionContext.h>
+#include <UI/TextInterface.h>
+#include <Mechanics/ActionValidator.h>
 
 namespace
 {
@@ -33,10 +36,25 @@ float randomizeStartingSpiceAmount()
 	return utility::RandomGenerator::getFloat(lowerBound, upperBound);
 }
 
-void performTempAction(GameMap::Galaxy& galaxy)
+constexpr float epsilon = 0.05f;
+
+bool isPlayerAbleToBuySpicesOnCurrentPlanet(const Mechanics::TravelAgent& travelAgent, Entity::Player& player)
 {
-	std::cout << galaxy;
-	std::cin.get();
+	auto epsilonSpiceCost = travelAgent.performActionOnCurrentPlanet(&GameMap::Planet::getSpiceBuyCost, epsilon);
+	auto playerBlixBalance = player.performAction(&Entity::Player::getBlixInStock, Action::EmptyActionContext{});
+	return epsilonSpiceCost <= playerBlixBalance;
+}
+
+bool isPlayerAbleToTravel(Mechanics::TravelAgent& travelAgent, Entity::Player& player)
+{
+	auto lowestTravelCost = travelAgent.getCheapestTravelCost();
+	auto playerSpiceBalance = player.performAction(&Entity::Player::getSpiceInStock, Action::EmptyActionContext{});
+	return lowestTravelCost <= playerSpiceBalance;
+}
+
+bool isPlayerOutOfResources(Mechanics::TravelAgent& travelAgent, Entity::Player& player)
+{
+	return not isPlayerAbleToBuySpicesOnCurrentPlanet(travelAgent, player) and not isPlayerAbleToTravel(travelAgent, player);
 }
 } // namespace
 
@@ -52,21 +70,48 @@ Game::Game(Time::GameTimeService&& providedTimeService)
 
 bool Game::run()
 {
-	std::cout << "Current planet data ===========================================\n";
-	travelAgent.printCurrentPlanetData();
-	std::cin.get();
-	performTempAction(galaxy);
-	travelAgent.performActionOnCurrentPlanet(&GameMap::Planet::buySpice, 3.0f);
+	if (travelAgent.isEndPlanetReached() or isPlayerOutOfResources(travelAgent, player))
+	{
+		return true;
+	}
+
+	UI::TextInterface::showCurrentState(travelAgent, player);
+	UI::TextInterface::showAvailableActions();
+	auto actionContext = UI::TextInterface::getNextAction(travelAgent);
+	
+	if (not Action::Validator::validate(actionContext, travelAgent, player))
+	{
+		UI::TextInterface::notifyInvalidAction();
+		return false;
+	}
+
+	travelAgent.performActionOnCurrentPlanet(actionContext.planetActionCallback, actionContext.planetActionContext);
+	player.performAction(actionContext.playerActionCallback, actionContext.playerActionContext);
+	travelAgent.performActionOnSelf(actionContext.travelAgentActionCallback, actionContext.travelAgentActionContext);
+	
 	timeService.update();
-	return travelAgent.isEndPlanetReached();
+	return false;
 }
 
 void Game::start()
 {
-	//while (not finished)
-	for (int i = 0; i < 10; i++)
+	UI::TextInterface::showStartScreen();
+
+	while (not finished)
 	{
 		finished = run();
+	}
+
+	if (isPlayerOutOfResources(travelAgent, player))
+	{
+		UI::TextInterface::showLoseScreen();
+		return;
+	}
+
+	if (travelAgent.isEndPlanetReached())
+	{
+		UI::TextInterface::showWinScreen();
+		return;
 	}
 }
 } // namespace core
