@@ -49,14 +49,24 @@ SolarSystem::SolarSystem(std::vector<PlanetPtr>&& planetsContainer, CreationGuar
 	interconnectPlanets(randomizeTravelCost());
 }
 
-SolarSystem::const_iterator SolarSystem::begin()
+SolarSystem::const_iterator SolarSystem::begin() const
 {
 	return planets.cbegin();
 }
 
-SolarSystem::const_iterator SolarSystem::end()
+SolarSystem::const_iterator SolarSystem::end() const
 {
 	return planets.cend();
+}
+
+SolarSystem::iterator SolarSystem::begin()
+{
+	return planets.begin();
+}
+
+SolarSystem::iterator SolarSystem::end()
+{
+	return planets.end();
 }
 
 PlanetPtr SolarSystem::operator[](int planetIndex)

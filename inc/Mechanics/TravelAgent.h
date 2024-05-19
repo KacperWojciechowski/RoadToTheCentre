@@ -2,6 +2,7 @@
 
 #include <GameMap/Planet.h>
 #include <memory>
+#include <iostream>
 
 namespace Mechanics
 {
@@ -16,13 +17,20 @@ public:
 	TravelAgent& operator=(const TravelAgent&) = delete;
 	TravelAgent& operator=(TravelAgent&&) = delete;
 
-	void printCurrentPlanetData();
-	void showTravelOptions();
+	friend std::ostream& operator<< (std::ostream&, const TravelAgent&);
+
+	void showTravelOptions() const;
+	bool isEndPlanetReached() const;
+	
+	using TravelAgentActionCallback = float(Mechanics::TravelAgent::*)(std::size_t);
+	float performActionOnSelf(TravelAgentActionCallback, std::size_t);
+	
+	float getCheapestTravelCost();
+	float getTravelCost(std::size_t);
 	float travelTo(std::size_t);
-	bool isEndPlanetReached();
 
 	using PlanetActionCallback = float(GameMap::Planet::*)(float);
-	float performActionOnCurrentPlanet(PlanetActionCallback, float);
+	float performActionOnCurrentPlanet(PlanetActionCallback, float) const;
 
 private:
 	std::weak_ptr<GameMap::Planet> currentPlanet;

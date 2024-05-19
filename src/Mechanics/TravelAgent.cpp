@@ -16,23 +16,54 @@ GameMap::PlanetPtr validate(std::weak_ptr<GameMap::Planet> planet)
 
 namespace Mechanics
 {
-	TravelAgent::TravelAgent(std::weak_ptr<GameMap::Planet> planetPtr)
-		: currentPlanet(std::move(planetPtr))
-	{
-	}
-
-	void TravelAgent::printCurrentPlanetData()
+TravelAgent::TravelAgent(std::weak_ptr<GameMap::Planet> planetPtr)
+	: currentPlanet(std::move(planetPtr))
 {
-	auto planet = validate(currentPlanet);
-	std::cout << "== Current planet data: ==\n";
-	std::cout << *planet << std::flush;
 }
 
-void TravelAgent::showTravelOptions()
+void TravelAgent::showTravelOptions() const
 {
 	auto planet = validate(currentPlanet);
-	std::cout << "== Travel options: ==\n";
+	std::cout << "================= Travel options: =================\n";
 	planet->printAdjacencyPlanetsInfo(std::cout);
+}
+
+float TravelAgent::performActionOnSelf(TravelAgentActionCallback action, std::size_t context)
+{
+	if (not action)
+	{
+		return 0.0f;
+	}
+	return (this->*action)(context);
+}
+
+float TravelAgent::getCheapestTravelCost()
+{
+	auto cheapestTravelCost = getTravelCost(0);
+	auto currPlanet = validate(currentPlanet);
+
+	constexpr float dummyContext = 0.0f;
+	for (std::size_t i = 1; i < currPlanet->getAdjacentPlanetCount(dummyContext); i++)
+	{
+		auto travelCost = getTravelCost(i);
+		if (travelCost < cheapestTravelCost)
+		{
+			cheapestTravelCost = travelCost;
+		}
+	}
+	return cheapestTravelCost;
+}
+
+float TravelAgent::getTravelCost(std::size_t adjPlanetIdx)
+{
+	auto currPlanet = validate(currentPlanet);
+	auto adjPlanetInfo = currPlanet->getAdjacentPlanetInfo(adjPlanetIdx);
+
+	if (not adjPlanetInfo.adjPlanet.lock())
+	{
+		throw std::runtime_error("adjPlanetInfo points to dead planet");
+	}
+	return adjPlanetInfo.travelCost;
 }
 
 float TravelAgent::travelTo(std::size_t adjPlanetIdx)
@@ -48,14 +79,27 @@ float TravelAgent::travelTo(std::size_t adjPlanetIdx)
 	return adjPlanetInfo.travelCost;
 }
 
-bool TravelAgent::isEndPlanetReached()
+bool TravelAgent::isEndPlanetReached() const
 {
 	auto planet = validate(currentPlanet);
 	return planet->isEndPlanet();
 }
-float TravelAgent::performActionOnCurrentPlanet(PlanetActionCallback action, float amount)
+
+float TravelAgent::performActionOnCurrentPlanet(PlanetActionCallback action, float amount) const
 {
+	if (not action)
+	{
+		return 0.0f;
+	}
 	auto planet = validate(currentPlanet);
 	return ((*planet).*action)(amount);
+}
+
+std::ostream& operator<<(std::ostream& out, const TravelAgent& travelAgent)
+{
+	auto planet = validate(travelAgent.currentPlanet);
+	out << "== Current planet data: ==\n";
+	out << *planet << std::flush;
+	return out;
 }
 } // namespace Mechanics

@@ -45,6 +45,18 @@ void connectSolarSystemsHierarchy(std::vector<Galaxy::SystemLayer>& layers, floa
 		}
 	}
 }
+
+void markLastLayerPlanetsAsFinal(std::vector<Galaxy::SystemLayer>& layers)
+{
+	auto lastLayer = layers.rbegin();
+	for (auto& system : *lastLayer)
+	{
+		for (auto& planet : *system)
+		{
+			planet->setAsEndPlanet();
+		}
+	}
+}
 } // namespace::
 
 Galaxy::Galaxy(Time::GameTimeService& gameTimeService)
@@ -60,6 +72,7 @@ Galaxy::Galaxy(Time::GameTimeService& gameTimeService)
 			layer.emplace_back(std::move(SolarSystem::create(gameTimeService)));
 		}
 	}
+	markLastLayerPlanetsAsFinal(layers);
 	connectSolarSystemsHierarchy(layers, randomizeInterstelarTravelCost());
 }
 Galaxy::SystemLayer& Galaxy::operator[](std::size_t layerIndex)

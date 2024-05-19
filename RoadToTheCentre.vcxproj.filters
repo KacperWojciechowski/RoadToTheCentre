@@ -49,6 +49,12 @@
     <Filter Include="Source Files\Core">
       <UniqueIdentifier>{a4565d9c-d9ba-4a49-9249-f0969b0366cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\UI">
+      <UniqueIdentifier>{56c0c732-73ce-4255-bbe8-50e3102e1c8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI">
+      <UniqueIdentifier>{d1be7945-a275-4232-9378-4bdcc91af16b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -78,6 +84,12 @@
     <ClCompile Include="src\Core\Game.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\UI\TextInterface.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mechanics\ActionValidator.cpp">
+      <Filter>Source Files\Mechanics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameMap\Planet.h">
@@ -101,9 +113,6 @@
     <ClInclude Include="inc\Utility\EnumSerializer.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="inc\Entities\Player.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="inc\Services\GameTimeService.h">
       <Filter>Header Files\Services</Filter>
     </ClInclude>
@@ -112,6 +121,18 @@
     </ClInclude>
     <ClInclude Include="inc\Core\Game.h">
       <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Entities\Player.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\UI\ActionContext.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\UI\TextInterface.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Mechanics\ActionValidator.h">
+      <Filter>Header Files\Mechanics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

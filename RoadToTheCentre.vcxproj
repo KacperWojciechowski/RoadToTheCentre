@@ -141,8 +141,10 @@
     <ClCompile Include="src\GameMap\Galaxy.cpp" />
     <ClCompile Include="src\GameMap\Planet.cpp" />
     <ClCompile Include="src\GameMap\SolarSystem.cpp" />
+    <ClCompile Include="src\Mechanics\ActionValidator.cpp" />
     <ClCompile Include="src\Mechanics\TravelAgent.cpp" />
     <ClCompile Include="src\Services\GameTimeService.cpp" />
+    <ClCompile Include="src\UI\TextInterface.cpp" />
     <ClCompile Include="src\Utility\RandomGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,9 +154,12 @@
     <ClInclude Include="inc\GameMap\Galaxy.h" />
     <ClInclude Include="inc\GameMap\Planet.h" />
     <ClInclude Include="inc\GameMap\SolarSystem.h" />
+    <ClInclude Include="inc\Mechanics\ActionValidator.h" />
     <ClInclude Include="inc\Mechanics\TravelAgent.h" />
     <ClInclude Include="inc\Services\GameTimeService.h" />
     <ClInclude Include="inc\Services\ITimeObserver.h" />
+    <ClInclude Include="inc\UI\ActionContext.h" />
+    <ClInclude Include="inc\UI\TextInterface.h" />
     <ClInclude Include="inc\Utility\EnumSerializer.h" />
     <ClInclude Include="inc\Utility\RandomGenerator.h" />
   </ItemGroup>
