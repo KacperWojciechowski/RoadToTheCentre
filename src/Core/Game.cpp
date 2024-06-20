@@ -1,7 +1,7 @@
 #include <Core/Game.hpp>
 #include <Utility/RandomGenerator.hpp>
 #include <Action/ActionValidator.hpp>
-#include <Action/GeneralActionContext.hpp>
+#include <Action/GeneralAction.hpp>
 #include <UI/TextInterface.hpp>
 
 namespace
@@ -77,17 +77,18 @@ bool Game::run()
 
 	UI::TextInterface::showCurrentState(travelAgent, player);
 	UI::TextInterface::showAvailableActions();
-	auto actionContext = UI::TextInterface::getNextAction(travelAgent);
+	auto action = UI::TextInterface::getNextAction(travelAgent);
 	
-	if (not Action::Validator::validate(actionContext, travelAgent, player))
+	if (not Action::Validator::validate(action, travelAgent, player))
 	{
 		UI::TextInterface::notifyInvalidAction();
 		return false;
 	}
 
-	travelAgent.performActionOnCurrentPlanet(actionContext.planetActionCallback, actionContext.planetActionParams);
-	travelAgent.performActionOnSelf(actionContext.travelAgentActionCallback, actionContext.travelAgentActionParams);
-	player.performAction(actionContext.playerActionCallback, actionContext.playerActionParams);
+	auto actionContext = std::dynamic_pointer_cast<Action::GeneralAction::Context>(action);
+	travelAgent.performActionOnCurrentPlanet(actionContext->planetActionCallback, actionContext->planetActionParams);
+	travelAgent.performActionOnSelf(actionContext->travelAgentActionCallback, actionContext->travelAgentActionParams);
+	player.performAction(actionContext->playerActionCallback, actionContext->playerActionParams);
 	
 	timeService.update();
 	return false;

@@ -1,7 +1,7 @@
 #include <Entities/Player.hpp>
 #include <Utility/RandomGenerator.hpp>
 #include <iostream>
-#include <Action/GeneralActionContext.hpp>
+#include <Action/GeneralAction.hpp>
 
 namespace
 {

@@ -1,20 +1,60 @@
 #pragma once
 
+#include <Action/Action.hpp>
 #include <limits>
 #include <cstddef>
-
-namespace Mechanics
-{
-	class TravelAgent;
-} // namespace Mechanics
+#include <Mechanics/TravelAgent.hpp>
+#include <Entities/Player.hpp>
 
 namespace Action
 {
-	struct GeneralActionContext;
-	enum class GeneralActionEnum : std::size_t;
+struct TradeActionParams
+{
+	float spiceAmount;
+	float blixAmount;
+};
 
-constexpr std::size_t generalActionCount = 4;
+struct TravelActionParams
+{
+	float spiceAmount;
+};
 
-GeneralActionEnum actionIdxToEnum(std::size_t actionIdx);
-GeneralActionContext getActionSpecificContext(GeneralActionEnum action, Mechanics::TravelAgent& travelAgent);
+class GeneralAction final : public Action
+{
+public:
+	enum class Enum : std::size_t;
+
+	struct Context final : public ActionContext
+	{
+		Context()
+			: ActionContext(ActionType::generalAction)
+			, planetActionCallback(nullptr)
+			, playerActionCallback(nullptr)
+			, travelAgentActionCallback(nullptr)
+			, playerActionParams(EmptyActionParams{})
+			, planetActionParams(0.0f)
+			, travelAgentActionParams(0u)
+			, isWaitAction(false)
+		{}
+
+		~Context() = default;
+
+		Mechanics::TravelAgent::PlanetActionCallback planetActionCallback;
+		Entity::Player::PlayerActionCallback playerActionCallback;
+		Mechanics::TravelAgent::TravelAgentActionCallback travelAgentActionCallback;
+		
+		PlayerActionParams playerActionParams;
+		float planetActionParams;
+		std::size_t travelAgentActionParams;
+		
+		bool isWaitAction = false;
+
+	};
+
+	std::shared_ptr<ActionContext> getActionSpecificContext(std::size_t action, Mechanics::TravelAgent& travelAgent) override;
+	std::size_t getActionCount() override;
+
+private:
+	static constexpr std::size_t actionCount = 4;
+};
 } // namespace Action

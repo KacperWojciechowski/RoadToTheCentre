@@ -1,5 +1,21 @@
 #pragma once
-#include <Action/GeneralActionContext.hpp>
+
+#include <memory>
+
+namespace Mechanics
+{
+class TravelAgent;
+} // namespace Mechanics
+
+namespace Entity
+{
+class Player;
+} // namespace Entity
+
+namespace Action
+{
+class ActionContext;
+} // namespace Action
 
 namespace UI
 {
@@ -8,7 +24,7 @@ namespace UI
 	public:
 		static void showCurrentState(const Mechanics::TravelAgent&, Entity::Player&);
 		static void showAvailableActions();
-		static Action::GeneralActionContext getNextAction(Mechanics::TravelAgent&);
+		static std::shared_ptr<Action::ActionContext> getNextAction(Mechanics::TravelAgent&);
 
 		static void showStartScreen();
 		static void showWinScreen();

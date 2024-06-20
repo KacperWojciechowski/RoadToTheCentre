@@ -1,11 +1,10 @@
 #include <Action/GeneralAction.hpp>
 #include <iostream>
-#include <Action/GeneralActionContext.hpp>
 #include <Mechanics/TravelAgent.hpp>
 
 namespace Action
 {
-enum class GeneralActionEnum : std::size_t
+enum class GeneralAction::Enum : std::size_t
 {
 	unknown = std::numeric_limits<std::size_t>::max(),
 	exit = 0,
@@ -17,7 +16,7 @@ enum class GeneralActionEnum : std::size_t
 
 namespace
 {
-GeneralActionContext getBuySpecificContext(const Mechanics::TravelAgent& travelAgent)
+std::shared_ptr<ActionContext> getBuySpecificContext(const Mechanics::TravelAgent& travelAgent)
 {
 	float spiceCount = -1.0f;
 	while (spiceCount < 0)
@@ -25,18 +24,18 @@ GeneralActionContext getBuySpecificContext(const Mechanics::TravelAgent& travelA
 		std::cout << "How many spices would you like to buy (must be >= 0) ?: ";
 		std::cin >> spiceCount;
 	}
-	GeneralActionContext context;
-	context.planetActionCallback = &GameMap::Planet::buySpice;
-	context.playerActionCallback = &Entity::Player::buySpice;
+	auto context = std::make_shared<GeneralAction::Context>();
+	context->planetActionCallback = &GameMap::Planet::buySpice;
+	context->playerActionCallback = &Entity::Player::buySpice;
 	
-	context.planetActionParams = spiceCount;
+	context->planetActionParams = spiceCount;
 	auto blixToPay = travelAgent.performActionOnCurrentPlanet(&GameMap::Planet::getSpiceBuyCost, spiceCount);
-	context.playerActionParams = TradeActionParams{ .spiceAmount = spiceCount, .blixAmount = blixToPay };
+	context->playerActionParams = TradeActionParams{ .spiceAmount = spiceCount, .blixAmount = blixToPay };
 
 	return context;
 }
 
-GeneralActionContext getSellSpecificContext(const Mechanics::TravelAgent& travelAgent)
+std::shared_ptr<ActionContext> getSellSpecificContext(const Mechanics::TravelAgent& travelAgent)
 {
 	float spiceCount = -1.0f;
 	while (spiceCount < 0)
@@ -44,18 +43,18 @@ GeneralActionContext getSellSpecificContext(const Mechanics::TravelAgent& travel
 		std::cout << "How many spices would you like to sell (must be >= 0) ?: ";
 		std::cin >> spiceCount;
 	}
-	GeneralActionContext context;
-	context.planetActionCallback = &GameMap::Planet::sellSpice;
-	context.playerActionCallback = &Entity::Player::sellSpice;
+	auto context = std::make_shared<GeneralAction::Context>();
+	context->planetActionCallback = &GameMap::Planet::sellSpice;
+	context->playerActionCallback = &Entity::Player::sellSpice;
 
-	context.planetActionParams = spiceCount;
+	context->planetActionParams = spiceCount;
 	auto blixEarned = travelAgent.performActionOnCurrentPlanet(&GameMap::Planet::getSpiceSellCost, spiceCount);
-	context.playerActionParams = TradeActionParams{ .spiceAmount = spiceCount, .blixAmount = blixEarned };
+	context->playerActionParams = TradeActionParams{ .spiceAmount = spiceCount, .blixAmount = blixEarned };
 
 	return context;
 }
 
-GeneralActionContext getTravelSpecificContext(Mechanics::TravelAgent& travelAgent)
+std::shared_ptr<ActionContext> getTravelSpecificContext(Mechanics::TravelAgent& travelAgent)
 {
 	std::size_t planetIdx = 0;
 	travelAgent.showTravelOptions();
@@ -64,63 +63,70 @@ GeneralActionContext getTravelSpecificContext(Mechanics::TravelAgent& travelAgen
 		std::cout << "\n\nRemember that spices serve as fuel for your ship. Where would you like to travel ?: ";
 		std::cin >> planetIdx;
 	}
-	GeneralActionContext context;
-	context.travelAgentActionCallback = &Mechanics::TravelAgent::travelTo;
-	context.playerActionCallback = &Entity::Player::useSpicesForTravel;
+	auto context = std::make_shared<GeneralAction::Context>();
+	context->travelAgentActionCallback = &Mechanics::TravelAgent::travelTo;
+	context->playerActionCallback = &Entity::Player::useSpicesForTravel;
 	
-	context.travelAgentActionParams = planetIdx - 1;
-	auto spiceTravelCost = travelAgent.performActionOnSelf(&Mechanics::TravelAgent::getTravelCost, context.travelAgentActionParams);
-	context.playerActionParams = TravelActionParams{ .spiceAmount = spiceTravelCost };
+	context->travelAgentActionParams = planetIdx - 1;
+	auto spiceTravelCost = travelAgent.performActionOnSelf(&Mechanics::TravelAgent::getTravelCost, context->travelAgentActionParams);
+	context->playerActionParams = TravelActionParams{ .spiceAmount = spiceTravelCost };
 
 	return context;
 }
 
-GeneralActionContext getWaitSpecificContext()
+std::shared_ptr<ActionContext> getWaitSpecificContext()
 {
 	std::cout << "You rest on the current planet for the next cycle\n\n";
-	GeneralActionContext context;
-	context.isWaitAction = true;
+	auto context = std::make_shared<GeneralAction::Context>();
+	context->isWaitAction = true;
 	return context;
 }
 
-GeneralActionContext getExitContext()
+void getExitContext()
 {
+	constexpr bool gracefulShutdown = 0;
 	std::cout << "Exiting the game\n\n";
-	GeneralActionContext context;
-	exit(0);
-	return context;
+	exit(gracefulShutdown);
 }
-} // namespace::
 
-GeneralActionEnum actionIdxToEnum(std::size_t actionIdx)
+GeneralAction::Enum actionIdxToEnum(std::size_t actionIdx)
 {
 	switch (actionIdx)
 	{
-	case 0: return GeneralActionEnum::exit;
-	case 1: return GeneralActionEnum::buySpices;
-	case 2: return GeneralActionEnum::sellSpices;
-	case 3: return GeneralActionEnum::travel;
-	case 4: return GeneralActionEnum::wait;
-	default: return GeneralActionEnum::unknown;
+	case 0: return GeneralAction::Enum::exit;
+	case 1: return GeneralAction::Enum::buySpices;
+	case 2: return GeneralAction::Enum::sellSpices;
+	case 3: return GeneralAction::Enum::travel;
+	case 4: return GeneralAction::Enum::wait;
+	default: return GeneralAction::Enum::unknown;
+	}
+}
+} // namespace::
+
+std::shared_ptr<ActionContext> GeneralAction::getActionSpecificContext(std::size_t action, Mechanics::TravelAgent& travelAgent)
+{
+	auto actionEnum = actionIdxToEnum(action);
+	switch (actionEnum)
+	{
+	case GeneralAction::Enum::exit:
+		getExitContext();
+		return nullptr;
+	case GeneralAction::Enum::buySpices:
+		return getBuySpecificContext(travelAgent);
+	case GeneralAction::Enum::sellSpices:
+		return getSellSpecificContext(travelAgent);
+	case GeneralAction::Enum::travel:
+		return getTravelSpecificContext(travelAgent);
+	case GeneralAction::Enum::wait:
+		return getWaitSpecificContext();
+	default:
+		return nullptr;
 	}
 }
 
-GeneralActionContext getActionSpecificContext(GeneralActionEnum action, Mechanics::TravelAgent& travelAgent)
+std::size_t GeneralAction::getActionCount()
 {
-	switch (action)
-	{
-	case GeneralActionEnum::exit:
-		return getExitContext();
-	case GeneralActionEnum::buySpices:
-		return getBuySpecificContext(travelAgent);
-	case GeneralActionEnum::sellSpices:
-		return getSellSpecificContext(travelAgent);
-	case GeneralActionEnum::travel:
-		return getTravelSpecificContext(travelAgent);
-	case GeneralActionEnum::wait:
-		return getWaitSpecificContext();
-	default:
-		return {};
-	}
+	constexpr std::size_t actionCount = 4;
+	return actionCount;
 }
 } // namespace Action

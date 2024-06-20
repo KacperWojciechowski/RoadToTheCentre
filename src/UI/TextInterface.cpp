@@ -34,16 +34,16 @@ void TextInterface::showAvailableActions()
 		"0. Exit\n\n";
 }
 
-Action::GeneralActionContext TextInterface::getNextAction(Mechanics::TravelAgent& travelAgent)
+std::shared_ptr<Action::ActionContext> TextInterface::getNextAction(Mechanics::TravelAgent& travelAgent)
 {
 	std::size_t actionIdx = std::numeric_limits<std::size_t>::max();
-	while (actionIdx > Action::generalActionCount)
+	auto action = std::make_shared<Action::GeneralAction>();
+	while (actionIdx > action->getActionCount())
 	{
 		std::cout << "Your choice ?: ";
 		std::cin >> actionIdx;
 	}
-	auto action = Action::actionIdxToEnum(actionIdx);
-	return getActionSpecificContext(action, travelAgent);
+	return action->getActionSpecificContext(actionIdx, travelAgent);
 }
 	
 void TextInterface::showStartScreen()
