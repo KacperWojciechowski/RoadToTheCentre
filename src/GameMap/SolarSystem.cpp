@@ -1,5 +1,5 @@
-#include <GameMap/SolarSystem.h>
-#include <Utility/RandomGenerator.h>
+#include <GameMap/SolarSystem.hpp>
+#include <Utility/RandomGenerator.hpp>
 
 namespace GameMap
 {

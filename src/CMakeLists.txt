@@ -1,0 +1,8 @@
+add_subdirectory(Core)
+add_subdirectory(Entities)
+add_subdirectory(GameMap)
+add_subdirectory(Mechanics)
+add_subdirectory(Services)
+add_subdirectory(UI)
+add_subdirectory(Utility)
+add_subdirectory(Action)

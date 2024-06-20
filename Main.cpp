@@ -1,5 +1,5 @@
-#include <Services/GameTimeService.h>
-#include <Core/Game.h>
+#include <Services/GameTimeService.hpp>
+#include <Core/Game.hpp>
 
 int main()
 {

@@ -1,33 +1,33 @@
-#include <Mechanics/ActionValidator.h>
-#include <Mechanics/TravelAgent.h>
-#include <Entities/Player.h>
-#include <GameMap/Planet.h>
+#include <Action/ActionValidator.hpp>
+#include <Mechanics/TravelAgent.hpp>
+#include <Entities/Player.hpp>
+#include <GameMap/Planet.hpp>
 
 namespace
 {
-bool isSellAction(const Action::ActionContext& context)
+bool isSellAction(const Action::GeneralActionContext& context)
 {
 	return context.planetActionCallback == &GameMap::Planet::sellSpice and context.playerActionCallback == &Entity::Player::sellSpice;
 }
 
-bool isBuyAction(const Action::ActionContext& context)
+bool isBuyAction(const Action::GeneralActionContext& context)
 {
 	return context.planetActionCallback == &GameMap::Planet::buySpice and context.playerActionCallback == &Entity::Player::buySpice;
 }
 
-bool isTravelAction(const Action::ActionContext& context)
+bool isTravelAction(const Action::GeneralActionContext& context)
 {
 	return context.playerActionCallback == &Entity::Player::useSpicesForTravel and context.travelAgentActionCallback == &Mechanics::TravelAgent::travelTo;
 }
 
-bool isWaitAction(const Action::ActionContext& context)
+bool isWaitAction(const Action::GeneralActionContext& context)
 {
 	return context.isWaitAction;
 }
 
 constexpr float dummyPlanetContext = 0.0f;
 
-bool validateTradeAction(const Action::ActionContext& context, Mechanics::TravelAgent& travelAgent, Entity::Player& player) 
+bool validateTradeAction(const Action::GeneralActionContext& context, Mechanics::TravelAgent& travelAgent, Entity::Player& player) 
 {
 	if (not std::holds_alternative<Action::PlayerTradeActionContext>(context.playerActionContext))
 	{
@@ -52,9 +52,10 @@ bool validateTradeAction(const Action::ActionContext& context, Mechanics::Travel
 			and planetSpicesInStock >= playerActionContext.spiceAmount
 			and blixInStock >= playerActionContext.blixAmount;
 	}
+	return false;
 }
 
-bool validateTravelAction(const Action::ActionContext& context, Mechanics::TravelAgent& travelAgent, Entity::Player& player)
+bool validateTravelAction(const Action::GeneralActionContext& context, Mechanics::TravelAgent& travelAgent, Entity::Player& player)
 {
 	if (not std::holds_alternative<Action::PlayerTravelActionContext>(context.playerActionContext))
 	{
@@ -73,7 +74,7 @@ bool validateTravelAction(const Action::ActionContext& context, Mechanics::Trave
 
 namespace Action
 {
-	bool Validator::validate(const ActionContext& context, Mechanics::TravelAgent& travelAgent, Entity::Player& player)
+	bool Validator::validate(const GeneralActionContext& context, Mechanics::TravelAgent& travelAgent, Entity::Player& player)
 	{	
 		if (isSellAction(context) or isBuyAction(context))
 		{

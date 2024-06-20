@@ -1,8 +1,8 @@
-#include <GameMap/Planet.h>
-#include <Utility/RandomGenerator.h>
+#include <GameMap/Planet.hpp>
+#include <Utility/RandomGenerator.hpp>
 #include <cassert>
 #include <algorithm>
-#include <Utility/EnumSerializer.h>
+#include <Utility/EnumSerializer.hpp>
 
 namespace GameMap
 {

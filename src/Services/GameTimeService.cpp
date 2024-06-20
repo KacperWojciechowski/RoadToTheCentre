@@ -1,4 +1,5 @@
-#include <Services/GameTimeService.h>
+#include <Services/GameTimeService.hpp>
+#include <algorithm>
 
 namespace Time
 {
@@ -16,7 +17,7 @@ namespace Time
 	}
 	void GameTimeService::unsubscribe(std::shared_ptr<ITimeObserver> target)
 	{
-		subscribers.erase(std::find_if(subscribers.begin(), subscribers.end(), [target](const auto& s) {
+		subscribers.erase(std::ranges::find_if(subscribers, [target](const auto& s) {
 			auto subscriber = s.lock();
 			return subscriber and subscriber == target;
 		}));

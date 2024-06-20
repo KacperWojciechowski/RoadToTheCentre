@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Mechanics/TravelAgent.h>
-#include <Services/GameTimeService.h>
-#include <Entities/Player.h>
-#include <GameMap/Galaxy.h>
+#include <Mechanics/TravelAgent.hpp>
+#include <Services/GameTimeService.hpp>
+#include <Entities/Player.hpp>
+#include <GameMap/Galaxy.hpp>
 
 namespace core
 {
