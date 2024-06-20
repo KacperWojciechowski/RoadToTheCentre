@@ -1,14 +1,14 @@
 #pragma once
 
-#include <Mechanics/TravelAgent.h>
-#include <Entities/Player.h>
-#include <GameMap/Planet.h>
+#include <Mechanics/TravelAgent.hpp>
+#include <Entities/Player.hpp>
+#include <GameMap/Planet.hpp>
 
 namespace Action
 {
-struct ActionContext
+struct GeneralActionContext
 {
-	ActionContext()
+	GeneralActionContext()
 		: planetActionCallback(nullptr)
 		, playerActionCallback(nullptr)
 		, travelAgentActionCallback(nullptr)

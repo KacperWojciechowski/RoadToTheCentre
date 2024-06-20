@@ -1,8 +1,8 @@
-#include <Core/Game.h>
-#include <Utility/RandomGenerator.h>
-#include <UI/ActionContext.h>
-#include <UI/TextInterface.h>
-#include <Mechanics/ActionValidator.h>
+#include <Core/Game.hpp>
+#include <Utility/RandomGenerator.hpp>
+#include <Action/ActionValidator.hpp>
+#include <Action/GeneralActionContext.hpp>
+#include <UI/TextInterface.hpp>
 
 namespace
 {

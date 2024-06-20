@@ -1,7 +1,7 @@
 #pragma once
 
-#include <GameMap/SolarSystem.h>
-#include <Services/GameTimeService.h>
+#include <GameMap/SolarSystem.hpp>
+#include <Services/GameTimeService.hpp>
 #include <vector>
 #include <iostream>
 

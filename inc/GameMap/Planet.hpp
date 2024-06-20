@@ -2,8 +2,8 @@
 
 #include <iostream>
 #include <random>
-#include <Services/GameTimeService.h>
-#include <GameMap/AdjacencyType.h>
+#include <Services/GameTimeService.hpp>
+#include <GameMap/AdjacencyType.hpp>
 
 namespace GameMap
 {

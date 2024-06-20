@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GameMap/Planet.h>
+#include <GameMap/Planet.hpp>
 #include <memory>
 #include <iostream>
 

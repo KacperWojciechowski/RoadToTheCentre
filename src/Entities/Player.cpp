@@ -1,5 +1,5 @@
-#include <Entities/Player.h>
-#include <Utility/RandomGenerator.h>
+#include <Entities/Player.hpp>
+#include <Utility/RandomGenerator.hpp>
 #include <iostream>
 
 namespace

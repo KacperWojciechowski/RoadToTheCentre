@@ -1,6 +1,6 @@
-#include <GameMap/Galaxy.h>
-#include <GameMap/SolarSystem.h>
-#include <Utility/RandomGenerator.h>
+#include <GameMap/Galaxy.hpp>
+#include <GameMap/SolarSystem.hpp>
+#include <Utility/RandomGenerator.hpp>
 
 namespace GameMap
 {

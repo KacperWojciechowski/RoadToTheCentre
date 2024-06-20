@@ -1,5 +1,5 @@
 #pragma once
-#include <UI/ActionContext.h>
+#include <Action/GeneralActionContext.hpp>
 
 namespace UI
 {
@@ -8,7 +8,7 @@ namespace UI
 	public:
 		static void showCurrentState(const Mechanics::TravelAgent&, Entity::Player&);
 		static void showAvailableActions();
-		static Action::ActionContext getNextAction(Mechanics::TravelAgent&);
+		static Action::GeneralActionContext getNextAction(Mechanics::TravelAgent&);
 
 		static void showStartScreen();
 		static void showWinScreen();

@@ -1,4 +1,4 @@
-#include <Utility/RandomGenerator.h>
+#include <Utility/RandomGenerator.hpp>
 #include <random>
 
 std::random_device utility::RandomGenerator::randomDevice;

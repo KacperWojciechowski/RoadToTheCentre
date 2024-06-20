@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <GameMap/AdjacencyType.h>
+#include <GameMap/AdjacencyType.hpp>
 
 namespace utility
 {
@@ -16,6 +16,7 @@ private:
 	const EnumType val;
 };
 
+template<>
 inline std::string EnumSerializer<GameMap::AdjacencyType>::operator()()
 {
 	switch (val)
