@@ -41,14 +41,14 @@ constexpr float epsilon = 0.05f;
 bool isPlayerAbleToBuySpicesOnCurrentPlanet(const Mechanics::TravelAgent& travelAgent, Entity::Player& player)
 {
 	auto epsilonSpiceCost = travelAgent.performActionOnCurrentPlanet(&GameMap::Planet::getSpiceBuyCost, epsilon);
-	auto playerBlixBalance = player.performAction(&Entity::Player::getBlixInStock, Action::EmptyActionContext{});
+	auto playerBlixBalance = player.performAction(&Entity::Player::getBlixInStock, Action::EmptyActionParams{});
 	return epsilonSpiceCost <= playerBlixBalance;
 }
 
 bool isPlayerAbleToTravel(Mechanics::TravelAgent& travelAgent, Entity::Player& player)
 {
 	auto lowestTravelCost = travelAgent.getCheapestTravelCost();
-	auto playerSpiceBalance = player.performAction(&Entity::Player::getSpiceInStock, Action::EmptyActionContext{});
+	auto playerSpiceBalance = player.performAction(&Entity::Player::getSpiceInStock, Action::EmptyActionParams{});
 	return lowestTravelCost <= playerSpiceBalance;
 }
 
@@ -85,9 +85,9 @@ bool Game::run()
 		return false;
 	}
 
-	travelAgent.performActionOnCurrentPlanet(actionContext.planetActionCallback, actionContext.planetActionContext);
-	player.performAction(actionContext.playerActionCallback, actionContext.playerActionContext);
-	travelAgent.performActionOnSelf(actionContext.travelAgentActionCallback, actionContext.travelAgentActionContext);
+	travelAgent.performActionOnCurrentPlanet(actionContext.planetActionCallback, actionContext.planetActionParams);
+	travelAgent.performActionOnSelf(actionContext.travelAgentActionCallback, actionContext.travelAgentActionParams);
+	player.performAction(actionContext.playerActionCallback, actionContext.playerActionParams);
 	
 	timeService.update();
 	return false;

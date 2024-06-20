@@ -29,9 +29,9 @@ GeneralActionContext getBuySpecificContext(const Mechanics::TravelAgent& travelA
 	context.planetActionCallback = &GameMap::Planet::buySpice;
 	context.playerActionCallback = &Entity::Player::buySpice;
 	
-	context.planetActionContext = spiceCount;
+	context.planetActionParams = spiceCount;
 	auto blixToPay = travelAgent.performActionOnCurrentPlanet(&GameMap::Planet::getSpiceBuyCost, spiceCount);
-	context.playerActionContext = PlayerTradeActionContext{ .spiceAmount = spiceCount, .blixAmount = blixToPay };
+	context.playerActionParams = TradeActionParams{ .spiceAmount = spiceCount, .blixAmount = blixToPay };
 
 	return context;
 }
@@ -48,9 +48,9 @@ GeneralActionContext getSellSpecificContext(const Mechanics::TravelAgent& travel
 	context.planetActionCallback = &GameMap::Planet::sellSpice;
 	context.playerActionCallback = &Entity::Player::sellSpice;
 
-	context.planetActionContext = spiceCount;
+	context.planetActionParams = spiceCount;
 	auto blixEarned = travelAgent.performActionOnCurrentPlanet(&GameMap::Planet::getSpiceSellCost, spiceCount);
-	context.playerActionContext = PlayerTradeActionContext{ .spiceAmount = spiceCount, .blixAmount = blixEarned };
+	context.playerActionParams = TradeActionParams{ .spiceAmount = spiceCount, .blixAmount = blixEarned };
 
 	return context;
 }
@@ -68,9 +68,9 @@ GeneralActionContext getTravelSpecificContext(Mechanics::TravelAgent& travelAgen
 	context.travelAgentActionCallback = &Mechanics::TravelAgent::travelTo;
 	context.playerActionCallback = &Entity::Player::useSpicesForTravel;
 	
-	context.travelAgentActionContext = planetIdx - 1;
-	auto spiceTravelCost = travelAgent.performActionOnSelf(&Mechanics::TravelAgent::getTravelCost, context.travelAgentActionContext);
-	context.playerActionContext = PlayerTravelActionContext{ .spiceAmount = spiceTravelCost };
+	context.travelAgentActionParams = planetIdx - 1;
+	auto spiceTravelCost = travelAgent.performActionOnSelf(&Mechanics::TravelAgent::getTravelCost, context.travelAgentActionParams);
+	context.playerActionParams = TravelActionParams{ .spiceAmount = spiceTravelCost };
 
 	return context;
 }
@@ -87,7 +87,7 @@ GeneralActionContext getExitContext()
 {
 	std::cout << "Exiting the game\n\n";
 	GeneralActionContext context;
-	//context.isExitAction = true;
+	exit(0);
 	return context;
 }
 } // namespace::

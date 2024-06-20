@@ -1,6 +1,7 @@
 #include <Entities/Player.hpp>
 #include <Utility/RandomGenerator.hpp>
 #include <iostream>
+#include <Action/GeneralActionContext.hpp>
 
 namespace
 {
@@ -20,7 +21,7 @@ Player::Player(float startingSpiceAmount)
 {
 }
 
-float Player::performAction(PlayerActionCallback action, const Action::PlayerActionContext& context)
+float Player::performAction(PlayerActionCallback action, const Action::PlayerActionParams& context)
 {
 	if (not action)
 	{
@@ -29,13 +30,13 @@ float Player::performAction(PlayerActionCallback action, const Action::PlayerAct
 	return (this->*action)(context);
 }
 
-float Player::buySpice(const Action::PlayerActionContext& context)
+float Player::buySpice(const Action::PlayerActionParams& context)
 {
-	if (not std::holds_alternative<Action::PlayerTradeActionContext>(context))
+	if (not std::holds_alternative<Action::TradeActionParams>(context))
 	{
 		throw std::invalid_argument("Invalid context provided for [Player::buySpice()]");
 	}
-	const auto& tgtContext = std::get<Action::PlayerTradeActionContext>(context);
+	const auto& tgtContext = std::get<Action::TradeActionParams>(context);
 
 	if (tgtContext.spiceAmount < 0 or tgtContext.blixAmount < 0)
 	{
@@ -47,13 +48,13 @@ float Player::buySpice(const Action::PlayerActionContext& context)
 	return 0.0f;
 }
 
-float Player::sellSpice(const Action::PlayerActionContext& context)
+float Player::sellSpice(const Action::PlayerActionParams& context)
 {
-	if (not std::holds_alternative<Action::PlayerTradeActionContext>(context))
+	if (not std::holds_alternative<Action::TradeActionParams>(context))
 	{
 		throw std::invalid_argument("Invalid context provided for [Player::sellSpice()]");
 	}
-	const auto& tgtContext = std::get<Action::PlayerTradeActionContext>(context);
+	const auto& tgtContext = std::get<Action::TradeActionParams>(context);
 
 	if (tgtContext.spiceAmount < 0 or tgtContext.blixAmount < 0)
 	{
@@ -65,23 +66,23 @@ float Player::sellSpice(const Action::PlayerActionContext& context)
 	return 0.0f;
 }
 
-float Player::getSpiceInStock(const Action::PlayerActionContext&)
+float Player::getSpiceInStock(const Action::PlayerActionParams&)
 {
 	return spice;
 }
 
-float Player::getBlixInStock(const Action::PlayerActionContext&)
+float Player::getBlixInStock(const Action::PlayerActionParams&)
 {
 	return blix;
 }
 
-float Player::useSpicesForTravel(const Action::PlayerActionContext& context)
+float Player::useSpicesForTravel(const Action::PlayerActionParams& context)
 {
-	if (not std::holds_alternative<Action::PlayerTravelActionContext>(context))
+	if (not std::holds_alternative<Action::TravelActionParams>(context))
 	{
 		throw std::invalid_argument("Invalid context provided for [Player::useSpicesForTravel()]");
 	}
-	const auto& tgtContext = std::get<Action::PlayerTravelActionContext>(context);
+	const auto& tgtContext = std::get<Action::TravelActionParams>(context);
 
 	if (tgtContext.spiceAmount < 0)
 	{

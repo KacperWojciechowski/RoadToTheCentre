@@ -2,28 +2,49 @@
 
 #include <Mechanics/TravelAgent.hpp>
 #include <Entities/Player.hpp>
-#include <GameMap/Planet.hpp>
+
+namespace GameMap
+{
+class Planet;
+} // namespace GameMap
 
 namespace Action
 {
+struct EmptyActionParams
+{
+};
+
+struct TradeActionParams
+{
+	float spiceAmount;
+	float blixAmount;
+};
+
+struct TravelActionParams
+{
+	float spiceAmount;
+};
+
 struct GeneralActionContext
 {
 	GeneralActionContext()
 		: planetActionCallback(nullptr)
 		, playerActionCallback(nullptr)
 		, travelAgentActionCallback(nullptr)
-		, playerActionContext(Action::EmptyActionContext{})
-		, planetActionContext(0.0f)
-		, travelAgentActionContext(0u)
+		, playerActionParams(EmptyActionParams{})
+		, planetActionParams(0.0f)
+		, travelAgentActionParams(0u)
 		, isWaitAction(false)
 	{}
 
 	Mechanics::TravelAgent::PlanetActionCallback planetActionCallback;
 	Entity::Player::PlayerActionCallback playerActionCallback;
 	Mechanics::TravelAgent::TravelAgentActionCallback travelAgentActionCallback;
-	PlayerActionContext playerActionContext;
-	float planetActionContext;
-	std::size_t travelAgentActionContext;
+	
+	PlayerActionParams playerActionParams;
+	float planetActionParams;
+	std::size_t travelAgentActionParams;
+	
 	bool isWaitAction = false;
 };
 } // namespace Action

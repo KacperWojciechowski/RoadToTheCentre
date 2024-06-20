@@ -5,26 +5,15 @@
 
 namespace Action
 {
-struct EmptyActionContext
-{
-};
+struct EmptyActionParams;
+struct TradeActionParams;
+struct TravelActionParams;
 
-struct PlayerTradeActionContext
-{
-	float spiceAmount;
-	float blixAmount;
-};
-
-struct PlayerTravelActionContext
-{
-	float spiceAmount;
-};
-
-using PlayerActionContext = std::variant<
-	EmptyActionContext,
-	PlayerTradeActionContext,
-	PlayerTravelActionContext>;
-} // namespace Action
+using PlayerActionParams = std::variant<
+	EmptyActionParams,
+	TradeActionParams,
+	TravelActionParams>;
+}
 
 namespace Entity
 {
@@ -40,14 +29,14 @@ public:
 
 	friend std::ostream& operator<<(std::ostream&, const Player&);
 
-	using PlayerActionCallback = float(Entity::Player::*)(const Action::PlayerActionContext&);
-	float performAction(PlayerActionCallback, const Action::PlayerActionContext&);
+	using PlayerActionCallback = float(Entity::Player::*)(const Action::PlayerActionParams&);
+	float performAction(PlayerActionCallback, const Action::PlayerActionParams&);
 	
-	float buySpice(const Action::PlayerActionContext&);
-	float sellSpice(const Action::PlayerActionContext&);
-	float getSpiceInStock(const Action::PlayerActionContext&);
-	float getBlixInStock(const Action::PlayerActionContext&);
-	float useSpicesForTravel(const Action::PlayerActionContext&);
+	float buySpice(const Action::PlayerActionParams&);
+	float sellSpice(const Action::PlayerActionParams&);
+	float getSpiceInStock(const Action::PlayerActionParams&);
+	float getBlixInStock(const Action::PlayerActionParams&);
+	float useSpicesForTravel(const Action::PlayerActionParams&);
 
 private:
 	void updateSpiceAmountBy(float);
