@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <Action/Action.hpp>
 
 namespace Mechanics
 {
@@ -14,11 +15,9 @@ class Player;
 
 namespace Action
 {
-class ActionContext;
-
 class Validator
 {
 public:
-	static bool validate(std::shared_ptr<ActionContext>, Mechanics::TravelAgent&, Entity::Player&);
+	static bool validate(const Action::Context&, ExecutingEntities&);
 };
 } // namespace Action

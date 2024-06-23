@@ -21,36 +21,29 @@ struct EmptyActionParams
 {
 };
 
-struct ActionContext
-{
-    ActionContext()
-        : type(ActionType::undefined)
-    {}
-
-    ActionContext(ActionType actionType)
-        : type(actionType)
-    {}
-
-    virtual ~ActionContext() = default;
-
-    ActionType type;
-};
-
 class Action
 {
 public:
-    virtual std::shared_ptr<ActionContext> getActionSpecificContext(std::size_t action, ExecutingEntities executingEntities)
+    struct Context
     {
-        return nullptr;
-    }
+        Context(ActionType actionType)
+            : actionType(actionType)
+        {
+        }
+        virtual ~Context() = default;
+
+        ActionType actionType;
+    };
 
     virtual std::size_t getActionCount()
     {
         return 0;
     }
 
-    virtual void execute(std::shared_ptr<ActionContext> context) = 0;
-    
+    virtual void prepareActionSpecificContext(std::size_t action, ExecutingEntities executingEntities) = 0;
+    virtual void execute(ExecutingEntities) = 0;
+    virtual const Context& getContext() const = 0;
+
     virtual ~Action() = default;
 };
 } // namespace Action

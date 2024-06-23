@@ -19,15 +19,7 @@ namespace Action
 {
 struct ExecutingEntities
 {
-    ExecutingEntities(Entity::Player& player, Mechanics::TravelAgent& travelAgent, Time::GameTimeService& timeService)
-        : player(player)
-        , travelAgent(travelAgent)
-        , timeService(timeService)
-    {}
-    ~ExecutingEntities() = default;
-
     Entity::Player& player;
     Mechanics::TravelAgent& travelAgent;
-    Time::GameTimeService& timeService;
 };
 } // namespace Action

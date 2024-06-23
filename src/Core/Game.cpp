@@ -77,18 +77,15 @@ bool Game::run()
 
 	UI::TextInterface::showCurrentState(travelAgent, player);
 	UI::TextInterface::showAvailableActions();
-	auto action = UI::TextInterface::getNextAction(travelAgent);
+	Action::ExecutingEntities executingEntities{.player = player, .travelAgent = travelAgent};
+	auto action = UI::TextInterface::getNextAction(executingEntities);
 	
-	if (not Action::Validator::validate(action, travelAgent, player))
+	if (not Action::Validator::validate(action->getContext(), executingEntities))
 	{
 		UI::TextInterface::notifyInvalidAction();
 		return false;
 	}
-
-	auto actionContext = std::dynamic_pointer_cast<Action::GeneralAction::Context>(action);
-	travelAgent.performActionOnCurrentPlanet(actionContext->planetActionCallback, actionContext->planetActionParams);
-	travelAgent.performActionOnSelf(actionContext->travelAgentActionCallback, actionContext->travelAgentActionParams);
-	player.performAction(actionContext->playerActionCallback, actionContext->playerActionParams);
+	action->execute(executingEntities);
 	
 	timeService.update();
 	return false;

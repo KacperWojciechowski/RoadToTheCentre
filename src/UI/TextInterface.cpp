@@ -34,7 +34,7 @@ void TextInterface::showAvailableActions()
 		"0. Exit\n\n";
 }
 
-std::shared_ptr<Action::ActionContext> TextInterface::getNextAction(Mechanics::TravelAgent& travelAgent)
+std::shared_ptr<Action::Action> TextInterface::getNextAction(Action::ExecutingEntities executingEntities)
 {
 	std::size_t actionIdx = std::numeric_limits<std::size_t>::max();
 	auto action = std::make_shared<Action::GeneralAction>();
@@ -43,7 +43,8 @@ std::shared_ptr<Action::ActionContext> TextInterface::getNextAction(Mechanics::T
 		std::cout << "Your choice ?: ";
 		std::cin >> actionIdx;
 	}
-	return action->getActionSpecificContext(actionIdx, travelAgent);
+	action->prepareActionSpecificContext(actionIdx, executingEntities);
+	return action;
 }
 	
 void TextInterface::showStartScreen()

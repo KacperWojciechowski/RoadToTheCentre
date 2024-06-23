@@ -92,7 +92,7 @@ float TravelAgent::performActionOnCurrentPlanet(PlanetActionCallback action, flo
 		return 0.0f;
 	}
 	auto planet = validate(currentPlanet);
-	return ((*planet).*action)(amount);
+	return (planet.get()->*action)(amount);
 }
 
 std::ostream& operator<<(std::ostream& out, const TravelAgent& travelAgent)

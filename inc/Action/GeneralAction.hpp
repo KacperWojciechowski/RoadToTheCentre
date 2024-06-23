@@ -22,12 +22,12 @@ struct TravelActionParams
 class GeneralAction final : public Action
 {
 public:
-	enum class Enum : std::size_t;
+	using ActionIdx = std::size_t;
 
-	struct Context final : public ActionContext
+	struct Context : public Action::Context
 	{
 		Context()
-			: ActionContext(ActionType::generalAction)
+			: Action::Context(ActionType::generalAction)
 			, planetActionCallback(nullptr)
 			, playerActionCallback(nullptr)
 			, travelAgentActionCallback(nullptr)
@@ -36,6 +36,11 @@ public:
 			, travelAgentActionParams(0u)
 			, isWaitAction(false)
 		{}
+		Context(const Context&) = default;
+		Context(Context&&) = default;
+
+		Context& operator=(const Context&) = default;
+		Context& operator=(Context&&) = default;
 
 		~Context() = default;
 
@@ -48,13 +53,23 @@ public:
 		std::size_t travelAgentActionParams;
 		
 		bool isWaitAction = false;
-
 	};
 
-	std::shared_ptr<ActionContext> getActionSpecificContext(std::size_t action, ExecutingEntities executingEntities) override;
+	const Action::Context& getContext() const override;
+	void execute(ExecutingEntities) override;
+	void prepareActionSpecificContext(ActionIdx, ExecutingEntities) override;
 	std::size_t getActionCount() override;
 
 private:
+	enum class Enum : std::size_t;
+
+	Enum actionIdxToEnum(std::size_t);
+	void prepareWaitSpecificContext();
+	void prepareTravelSpecificContext(ExecutingEntities executingEntities);
+	void prepareSellSpecificContext(ExecutingEntities executingEntities);
+	void prepareBuySpecificContext(ExecutingEntities executingEntities);
+
+	Context context;
 	static constexpr std::size_t actionCount = 4;
 };
 } // namespace Action

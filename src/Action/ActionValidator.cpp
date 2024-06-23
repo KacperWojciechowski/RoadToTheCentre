@@ -34,17 +34,17 @@ bool isWaitAction(const GeneralAction::Context& context)
 }
 
 bool validateTradeAction(
-	const GeneralAction::Context& context, Mechanics::TravelAgent& travelAgent, Entity::Player& player) 
+	const GeneralAction::Context& context, ExecutingEntities& executingEntities) 
 {
 	if (not std::holds_alternative<TradeActionParams>(context.playerActionParams))
 	{
 		return false;
 	}
 
-	auto spicesInStock = player.performAction(&Entity::Player::getSpiceInStock, EmptyActionParams{});
-	auto blixInStock = player.performAction(&Entity::Player::getBlixInStock, EmptyActionParams{});
+	auto spicesInStock = executingEntities.player.performAction(&Entity::Player::getSpiceInStock, EmptyActionParams{});
+	auto blixInStock = executingEntities.player.performAction(&Entity::Player::getBlixInStock, EmptyActionParams{});
 
-	auto planetSpicesInStock = travelAgent.performActionOnCurrentPlanet(&GameMap::Planet::getSpicesInStock, dummyPlanetParams);
+	auto planetSpicesInStock = executingEntities.travelAgent.performActionOnCurrentPlanet(&GameMap::Planet::getSpicesInStock, dummyPlanetParams);
 	auto& playerActionParams = std::get<TradeActionParams>(context.playerActionParams);
 		
 	if (isSellAction(context))
@@ -60,35 +60,34 @@ bool validateTradeAction(
 	}
 }
 
-bool validateTravelAction(const GeneralAction::Context& context, Mechanics::TravelAgent& travelAgent, Entity::Player& player)
+bool validateTravelAction(const GeneralAction::Context& context, ExecutingEntities& executingEntities)
 {
 	if (not std::holds_alternative<TravelActionParams>(context.playerActionParams))
 	{
 		return false;
 	}
 
-	auto spicesInStock = player.performAction(&Entity::Player::getSpiceInStock, EmptyActionParams{});
+	auto spicesInStock = executingEntities.player.performAction(&Entity::Player::getSpiceInStock, EmptyActionParams{});
 	auto& playerActionContext = std::get<TravelActionParams>(context.playerActionParams);
 
-	auto adjPlanetsCount = travelAgent.performActionOnCurrentPlanet(
+	auto adjPlanetsCount = executingEntities.travelAgent.performActionOnCurrentPlanet(
 		&GameMap::Planet::getAdjacentPlanetCount, dummyPlanetParams);
 
 	return spicesInStock >= playerActionContext.spiceAmount and 
 		   context.travelAgentActionParams < adjPlanetsCount;
 }
 
-bool validateGeneralAction(std::shared_ptr<ActionContext> context, Mechanics::TravelAgent& travelAgent, Entity::Player& player)
+bool validateGeneralAction(const GeneralAction::Context& context, ExecutingEntities& executingEntities)
 {
-	const auto& generalActionContext = *std::dynamic_pointer_cast<GeneralAction::Context>(context);
-	if (isBuyAction(generalActionContext) or isSellAction(generalActionContext))
+	if (isBuyAction(context) or isSellAction(context))
 	{
-		return validateTradeAction(generalActionContext, travelAgent, player);
+		return validateTradeAction(context, executingEntities);
 	}
-	if (isTravelAction(generalActionContext))
+	if (isTravelAction(context))
 	{
-		return validateTravelAction(generalActionContext, travelAgent, player);
+		return validateTravelAction(context, executingEntities);
 	}
-	if (isWaitAction(generalActionContext))
+	if (isWaitAction(context))
 	{
 		return true;
 	}
@@ -96,16 +95,12 @@ bool validateGeneralAction(std::shared_ptr<ActionContext> context, Mechanics::Tr
 }
 } // namespace
 
-bool Validator::validate(std::shared_ptr<ActionContext> context, Mechanics::TravelAgent& travelAgent, Entity::Player& player)
+bool Validator::validate(const Action::Context& context, ExecutingEntities& executingEntities)
 {	
-	if (not context)
-	{
-		return false;
-	}
-	switch(context->type)
+	switch(context.actionType)
 	{
 		case ActionType::generalAction:
-			return validateGeneralAction(context, travelAgent, player);
+			return validateGeneralAction(dynamic_cast<const GeneralAction::Context&>(context), executingEntities);
 		default:
 			return false;
 	}
