@@ -51,7 +51,7 @@ public:
 
 	};
 
-	std::shared_ptr<ActionContext> getActionSpecificContext(std::size_t action, Mechanics::TravelAgent& travelAgent) override;
+	std::shared_ptr<ActionContext> getActionSpecificContext(std::size_t action, ExecutingEntities executingEntities) override;
 	std::size_t getActionCount() override;
 
 private:

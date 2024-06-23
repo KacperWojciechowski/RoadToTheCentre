@@ -16,7 +16,7 @@ enum class GeneralAction::Enum : std::size_t
 
 namespace
 {
-std::shared_ptr<ActionContext> getBuySpecificContext(const Mechanics::TravelAgent& travelAgent)
+std::shared_ptr<ActionContext> getBuySpecificContext(ExecutingEntities executingEntities)
 {
 	float spiceCount = -1.0f;
 	while (spiceCount < 0)
@@ -29,7 +29,7 @@ std::shared_ptr<ActionContext> getBuySpecificContext(const Mechanics::TravelAgen
 	context->playerActionCallback = &Entity::Player::buySpice;
 	
 	context->planetActionParams = spiceCount;
-	auto blixToPay = travelAgent.performActionOnCurrentPlanet(&GameMap::Planet::getSpiceBuyCost, spiceCount);
+	auto blixToPay = executingEntities.travelAgent.performActionOnCurrentPlanet(&GameMap::Planet::getSpiceBuyCost, spiceCount);
 	context->playerActionParams = TradeActionParams{ .spiceAmount = spiceCount, .blixAmount = blixToPay };
 
 	return context;
@@ -103,7 +103,7 @@ GeneralAction::Enum actionIdxToEnum(std::size_t actionIdx)
 }
 } // namespace::
 
-std::shared_ptr<ActionContext> GeneralAction::getActionSpecificContext(std::size_t action, Mechanics::TravelAgent& travelAgent)
+std::shared_ptr<ActionContext> GeneralAction::getActionSpecificContext(std::size_t action, ExecutingEntities executingEntities)
 {
 	auto actionEnum = actionIdxToEnum(action);
 	switch (actionEnum)
@@ -112,11 +112,11 @@ std::shared_ptr<ActionContext> GeneralAction::getActionSpecificContext(std::size
 		getExitContext();
 		return nullptr;
 	case GeneralAction::Enum::buySpices:
-		return getBuySpecificContext(travelAgent);
+		return getBuySpecificContext(executingEntities);
 	case GeneralAction::Enum::sellSpices:
-		return getSellSpecificContext(travelAgent);
+		return getSellSpecificContext(executingEntities);
 	case GeneralAction::Enum::travel:
-		return getTravelSpecificContext(travelAgent);
+		return getTravelSpecificContext(executingEntities);
 	case GeneralAction::Enum::wait:
 		return getWaitSpecificContext();
 	default:

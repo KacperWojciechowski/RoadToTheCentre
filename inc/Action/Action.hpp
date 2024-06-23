@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <memory>
+#include <Action/ExecutingEntities.hpp>
 
 namespace Mechanics
 {
@@ -37,7 +38,8 @@ struct ActionContext
 
 class Action
 {
-    virtual std::shared_ptr<ActionContext> getActionSpecificContext(std::size_t action, Mechanics::TravelAgent& travelAgent)
+public:
+    virtual std::shared_ptr<ActionContext> getActionSpecificContext(std::size_t action, ExecutingEntities executingEntities)
     {
         return nullptr;
     }
@@ -46,5 +48,9 @@ class Action
     {
         return 0;
     }
+
+    virtual void execute(std::shared_ptr<ActionContext> context) = 0;
+    
+    virtual ~Action() = default;
 };
 } // namespace Action
