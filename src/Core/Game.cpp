@@ -1,7 +1,7 @@
 #include <Core/Game.hpp>
 #include <Utility/RandomGenerator.hpp>
 #include <Action/ActionValidator.hpp>
-#include <Action/GeneralActionContext.hpp>
+#include <Action/GeneralAction.hpp>
 #include <UI/TextInterface.hpp>
 
 namespace
@@ -41,14 +41,14 @@ constexpr float epsilon = 0.05f;
 bool isPlayerAbleToBuySpicesOnCurrentPlanet(const Mechanics::TravelAgent& travelAgent, Entity::Player& player)
 {
 	auto epsilonSpiceCost = travelAgent.performActionOnCurrentPlanet(&GameMap::Planet::getSpiceBuyCost, epsilon);
-	auto playerBlixBalance = player.performAction(&Entity::Player::getBlixInStock, Action::EmptyActionContext{});
+	auto playerBlixBalance = player.performAction(&Entity::Player::getBlixInStock, Action::EmptyActionParams{});
 	return epsilonSpiceCost <= playerBlixBalance;
 }
 
 bool isPlayerAbleToTravel(Mechanics::TravelAgent& travelAgent, Entity::Player& player)
 {
 	auto lowestTravelCost = travelAgent.getCheapestTravelCost();
-	auto playerSpiceBalance = player.performAction(&Entity::Player::getSpiceInStock, Action::EmptyActionContext{});
+	auto playerSpiceBalance = player.performAction(&Entity::Player::getSpiceInStock, Action::EmptyActionParams{});
 	return lowestTravelCost <= playerSpiceBalance;
 }
 
@@ -77,17 +77,15 @@ bool Game::run()
 
 	UI::TextInterface::showCurrentState(travelAgent, player);
 	UI::TextInterface::showAvailableActions();
-	auto actionContext = UI::TextInterface::getNextAction(travelAgent);
+	Action::ExecutingEntities executingEntities{.player = player, .travelAgent = travelAgent};
+	auto action = UI::TextInterface::getNextAction(executingEntities);
 	
-	if (not Action::Validator::validate(actionContext, travelAgent, player))
+	if (not Action::Validator::validate(action->getContext(), executingEntities))
 	{
 		UI::TextInterface::notifyInvalidAction();
 		return false;
 	}
-
-	travelAgent.performActionOnCurrentPlanet(actionContext.planetActionCallback, actionContext.planetActionContext);
-	player.performAction(actionContext.playerActionCallback, actionContext.playerActionContext);
-	travelAgent.performActionOnSelf(actionContext.travelAgentActionCallback, actionContext.travelAgentActionContext);
+	action->execute(executingEntities);
 	
 	timeService.update();
 	return false;

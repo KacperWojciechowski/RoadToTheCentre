@@ -22,7 +22,7 @@ public:
 	void showTravelOptions() const;
 	bool isEndPlanetReached() const;
 	
-	using TravelAgentActionCallback = float(Mechanics::TravelAgent::*)(std::size_t);
+	using TravelAgentActionCallback = float(TravelAgent::*)(std::size_t);
 	float performActionOnSelf(TravelAgentActionCallback, std::size_t);
 	
 	float getCheapestTravelCost();
